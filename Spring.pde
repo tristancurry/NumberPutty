@@ -36,8 +36,8 @@ class Spring {
       v1 = box2d.coordWorldToPixels(v1);
       v2 = box2d.coordWorldToPixels(v2);
       // And just draw a line
-      stroke(0);
-      strokeWeight(1);
+      stroke(255);
+      strokeWeight(2);
       line(v1.x,v1.y,v2.x,v2.y);
     }
   }
@@ -59,7 +59,7 @@ class Spring {
     // And that's the target
     md.target.set(mp);
     // Some stuff about how strong and bouncy the spring should be
-    md.maxForce = 1000.0 * blob.body.m_mass;
+    md.maxForce = 10000.0 * blob.body.m_mass;
     md.frequencyHz = 5.0;
     md.dampingRatio = 0.9;
 
