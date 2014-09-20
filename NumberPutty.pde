@@ -32,7 +32,8 @@ ArrayList blobList;
 
 Spring spring;
 
-PFont t;
+PFont font12;
+PFont font20;
 
 void setup() {
 
@@ -48,7 +49,7 @@ void setup() {
   pixelsPerCM = int(round(pixelsPerInch/2.55));
 
   arenaWidth = 0.8*(width - 2*controlPaddingPC*width - controlDiameterCM*pixelsPerCM);
-  arenaHeight = height;
+  arenaHeight = 0.95*height;
 
 
   println(budget);
@@ -100,9 +101,15 @@ void setup() {
     blobList.add(newBlob);
   }
 
-  t = loadFont("ChicagoFLF-48.vlw");
-  textFont(t);
+  font12 = loadFont("ChicagoFLF-12.vlw");
+  font20 = loadFont("ChicagoFLF-20.vlw");
   background(0);
+  
+  smooth();
+  
+  
+  
+  
 }
 
 
@@ -110,7 +117,28 @@ void setup() {
 
 void draw() {
   background(0);
+  
+  //temporary labels
+  fill(255);
+  textFont(font12);
+  textSize(12);
+  text("Left-drag to sling the blobs around.", arenaWidth/2,0.05*arenaHeight);
+  text("Right-click to switch between balls and boxes :D (temporary assignment).", arenaWidth/2,0.1*arenaHeight);
+  text("This will be toggled by a button, as will the blob-explosion cursor.", arenaWidth/2,0.15*arenaHeight);
+  pushMatrix();
+  translate(arenaWidth - 0.5*bucketWidth, arenaHeight/2);
+  rotate(HALF_PI);
 
+  text("This is where you put blobs to be combined.", 0,0);
+  text("The 'combine' button will be about halfway up the short wall.", 0, 0.15*bucketWidth);
+  translate(0, - bucketWidth);
+  text("Information about populations will be shown here.", 0, 0);
+  popMatrix();
+  pushMatrix();
+  translate(width/2, height - 5);
+  fill(140);
+  text("Tristan Miller 2014. Comments & suggestions to tristan.miller@asms.sa.edu.au", 0, 0);
+  popMatrix();
   box2d.step();
 
   spring.update(mouseX, mouseY);

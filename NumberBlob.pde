@@ -68,7 +68,6 @@ class NumberBlob {
 
 
     textAlign(PConstants.CENTER, PConstants.CENTER);
-    textSize(20);
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(angle);
@@ -82,7 +81,9 @@ class NumberBlob {
       rectMode(PConstants.CENTER);
       rect(0, 0, 0.99*diam, 0.99*diam);
     } 
-      fill(255);
+    fill(255);
+    textFont(font20);
+    textSize(20);
     text(value, 0, 0);
 
     popMatrix();
