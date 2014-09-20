@@ -135,9 +135,9 @@ void draw() {
   text("Information about populations will be shown here.", 0, 0);
   popMatrix();
   pushMatrix();
-  translate(width/2, height - 5);
-  fill(140);
-  text("Tristan Miller 2014. Comments & suggestions to tristan.miller@asms.sa.edu.au", 0, 0);
+  translate(width/2, height - 10);
+  fill(255);
+  text("Tristan Miller 2014. Questions & suggestions to tristan.miller@asms.sa.edu.au", 0, 0);
   popMatrix();
   box2d.step();
 
