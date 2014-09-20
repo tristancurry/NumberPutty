@@ -46,20 +46,20 @@ class Spring {
   // This is the key function where
   // we attach the spring to an x,y location
   // and the Box object's location
-  void bind(float x, float y, Box box) {
+  void bind(float x, float y, NumberBlob blob) {
     // Define the joint
     MouseJointDef md = new MouseJointDef();
     
     // Body A is just a fake ground body for simplicity (there isn't anything at the mouse)
     md.bodyA = box2d.getGroundBody();
     // Body 2 is the box's boxy
-    md.bodyB = box.body;
+    md.bodyB = blob.body;
     // Get the mouse location in world coordinates
     Vec2 mp = box2d.coordPixelsToWorld(x,y);
     // And that's the target
     md.target.set(mp);
     // Some stuff about how strong and bouncy the spring should be
-    md.maxForce = 1000.0 * box.body.m_mass;
+    md.maxForce = 1000.0 * blob.body.m_mass;
     md.frequencyHz = 5.0;
     md.dampingRatio = 0.9;
 

@@ -16,7 +16,7 @@ class Boundary {
   // But we also have to make a body for box2d to know about it
   Body b;
 
- Boundary(float posX,float posY_, float boundaryWidth_, float boundaryHeight_, float angle_) {
+ Boundary(float posX_,float posY_, float boundaryWidth_, float boundaryHeight_, float angle_) {
     posX = posX_;
     posY = posY_;
     boundaryWidth = boundaryWidth_;

@@ -5,53 +5,24 @@
 // Spring 2010
 // Box2DProcessing example
 
-// A ball with a number in
+// A box with a number inscribed
 
-class NumberBox {
-
-  // We need to keep track of a Body and a width and height
-  Body body;
-  
-  float posX;
-  float posY;
-  float diam;
-  int value;
-  color col;
-  
-  float angle;
-  
-  boolean dead;
-  Vec2 pos;
-
+class NumberBox extends NumberBlob {
 
   // Constructor
-  Box(float x_, float y_, float diam_, int value_, color col_ ) {
-    float posX = posX_;
-    float posY = posY_;
-    x = constrain(x, 20, width - 20);
-    y = constrain(y, 20, height - 20);
-    diam = diam_;
-    value = value_;
-    dead = false;
-    
+  NumberBox(float posX_, float posY_, float diam_, int value_, color col_ ) {
+    super(posX_, posY_, diam_, value_, col_);
+
+    println(posX);
+
     // Add the box to the box2d world
     makeBody(new Vec2(posX, posY), diam, diam);
     body.setUserData(this);
   }
 
-  // This function removes the particle from the box2d world
-  void killBody() {
-    box2d.destroyBody(body);
-  }
-  //this function is used to test if some coords are within the shape
-  boolean contains(float x, float y) {
-    Vec2 worldPoint = box2d.coordPixelsToWorld(x, y);
-    Fixture f = body.getFixtureList();
-    boolean inside = f.testPoint(worldPoint);
-    return inside;
-  }
 
-  // Drawing the ball
+
+  // Drawing the box
   void display() {
     // We look at each body and get its screen position
     pos = box2d.getBodyPixelCoord(body);
@@ -75,8 +46,9 @@ class NumberBox {
 
 
   // This function adds the rectangle to the box2d world
-  void makeBody(Vec2 center, float boxWidth_, float boxHeight) {
+  void makeBody(Vec2 center, float boxWidth_, float boxHeight_) {
     // Define and create the body
+    println(center);
     BodyDef bd = new BodyDef();
     bd.type = BodyType.DYNAMIC;
     bd.position.set(box2d.coordPixelsToWorld(center));
@@ -84,15 +56,15 @@ class NumberBox {
 
     // Define a polygon (this is what we use for a rectangle)
     PolygonShape sd = new PolygonShape();
-    float box2dWidth = box2d.scalarPixelsToWorld((boxWidth_+5)/2);
-    float box2dHeight = box2d.scalarPixelsToWorld((boxHeight_+5)/2);
+    float box2dWidth = box2d.scalarPixelsToWorld(boxWidth_/2);
+    float box2dHeight = box2d.scalarPixelsToWorld(boxHeight_/2);
     sd.setAsBox(box2dWidth, box2dHeight);
 
 
     // Define a fixture
     FixtureDef fd = new FixtureDef();
     fd.shape = sd;
-    
+
     // Parameters that affect physics
     fd.density = 1;
     fd.friction = 0.5;
