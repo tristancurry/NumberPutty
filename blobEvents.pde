@@ -1,19 +1,74 @@
-void explode(NumberBlob thisBlob) {
+void mergeBlobs() {
+
+  //first see if there is more than one blob in the bucket
+  int numberOfBlobs = 0;
+  for (int i = 0; i < blobList.size (); i++) {
+    NumberBlob thisBlob = (NumberBlob) blobList.get(i);
+    if (thisBlob.pos.x < arenaWidth && thisBlob.pos.x > arenaWidth - bucketWidth) {
+      numberOfBlobs = numberOfBlobs + 1;
+    }
+  }
+  //if so, then add their values to produce a new blob, then remove them
+  if (numberOfBlobs > 1) {
+    float tally = 0;
+    for (int i = 0; i < blobList.size (); i++) {
+      NumberBlob thisBlob = (NumberBlob) blobList.get(i);
+      if (thisBlob.pos.x < arenaWidth && thisBlob.pos.x > arenaWidth - bucketWidth) {
+        tally = tally + thisBlob.value;
+        thisBlob.dead = true;
+        thisBlob.killBody();
+      }
+    }
+    //if the tally is zero, and zeroBlobs aren't allowed, then don't worry about making a new blob...
+    if (tally == 0 && !zeroAllowed) {
+    } else {
+      float newDiam = pow(abs(tally), 1/3.)*pixelsPerCM;
+      //if we did end up with a zeroBlob, please give it a radius bigger than 0.
+      if (tally == 0) {
+        newDiam = pixelsPerCM;
+      }
+
+      NumberBlob newBlob = new NumberBlob(buttons[7].posX - 10, buttons[7].posY, newDiam, int(tally), color(150), buttons[7].shape);
+
+
+      blobList.add(newBlob);
+    }
+  }
+}
+
+
+
+
+void smashBlob(NumberBlob thisBlob) {
   int val = thisBlob.value;
   int frag[] = new int[2];
-  frag[0] = int(floor(val/2.0));
+
+  //if the value of the blob is not zero, smash it into nearly equal portions
+  if (val != 0) {
+    frag[0] = int(floor(val/2.0));
+  } else {
+    //otherwise, randomly decide whether to spawn a pair of zeros, or a -1 +1 pair!
+    float coinFlip = random(0, 1);
+    if (coinFlip > 0.5) {
+      frag[0] = 1;
+    } else {
+      frag[0] = 0;
+    }
+  }
+
   frag[1] = val - frag[0];
 
 
   exploding = true;
 
   for (int i= 0; i<2; i ++) {
-    float ang = thisBlob.body.getAngle() + random(0,PI) + i*HALF_PI;
+    float ang = thisBlob.body.getAngle() + random(0, PI) + i*HALF_PI;
     Vec2 v = new Vec2(0, 0);
     Vec2 p;
     float d;
 
-    d = pow(frag[i], 1/3.)*pixelsPerCM;
+    d = pow(abs(frag[i]), 1/3.)*pixelsPerCM;
+    d = constrain(d, pixelsPerCM, 10e6);
     p = new Vec2(d*cos(ang), d*sin(ang));
     if (thisBlob.pos.x < arenaWidth - bucketWidth) {
       p.x = constrain(thisBlob.pos.x + p.x, d, arenaWidth - bucketWidth - d);

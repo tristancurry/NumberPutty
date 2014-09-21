@@ -7,8 +7,8 @@ void mousePressed() {
       // And if not in smash mode, bind the mouse location to the box with a spring
       if (!smashMode) {
         spring.bind(mouseX, mouseY, thisBlob);
-      } else if (thisBlob.value > 1 &&!exploding && !thisBlob.newborn) {
-        explode(thisBlob);
+      } else if (abs(thisBlob.value) != 1 &&!exploding && !thisBlob.newborn) {
+        smashBlob(thisBlob);
         thisBlob.dead = true;
         thisBlob.killBody();
       }
@@ -31,9 +31,12 @@ void mouseReleased() {
     }
   }
 
-  if (buttons[5].mouseIn() && buttons[5].state == "down") {
-    swapShapes();
-  }
+    if (buttons[5].mouseIn() && buttons[5].state == "down") {
+      swapShapes();
+    }
+   if (buttons[buttons.length - 1].mouseIn() && buttons[buttons.length - 1].state == "down") {
+      mergeBlobs();
+    }
 }
 
 
@@ -41,7 +44,7 @@ void mouseReleased() {
 void makeButtons(){
   ArrayList buttonGroup1 = new ArrayList();
   for (int i = 0; i < 4; i++) {
-    Button newButton = new Button ((i+1) * (arenaWidth - bucketWidth)/5, 50, 1*pixelsPerCM, "", "box", "available");
+    Button newButton = new Button ((i+1) * (arenaWidth - bucketWidth)/5, 50, 1*pixelsPerCM, "", "ball", "available");
     newButton.symbolSize = 42;
     newButton.symbolFont = font42;
     buttonGroup1.add(newButton);
@@ -51,7 +54,7 @@ void makeButtons(){
 
   ArrayList buttonGroup2 = new ArrayList();
   for (int i = 0; i < 3; i++) {
-    Button newButton = new Button ((1-controlPaddingPC)*width - 0.5*pixelsPerCM, (i+1)*height/4, pixelsPerCM, "", "box", "available");
+    Button newButton = new Button ((1-controlPaddingPC)*width - 0.5*pixelsPerCM, (i+1)*height/4, pixelsPerCM, "", "ball", "available");
     buttonGroup2.add(newButton);
   }
 
@@ -73,10 +76,10 @@ void makeButtons(){
   Button shapeButton = (Button) buttonGroup2.get(1);
   Button pauseButton = (Button) buttonGroup2.get(2);
   shapeButton.buttonText = "?";
-  shapeButton.shape = "ball";
+  shapeButton.shape = "box";
 
   Boundary mergeWall = (Boundary) boundaries.get(4);
-  Button mergeButton = new Button (mergeWall.posX, arenaHeight - mergeWall.boundaryHeight/2, 1*pixelsPerCM, "=", "box", "available");
+  Button mergeButton = new Button (mergeWall.posX, arenaHeight - mergeWall.boundaryHeight/2, 1*pixelsPerCM, "=", "ball", "available");
   mergeButton.symbolSize = 42;
   mergeButton.symbolFont = font42;
   buttons = new Button[8];
