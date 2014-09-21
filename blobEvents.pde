@@ -28,7 +28,7 @@ void mergeBlobs() {
         newDiam = pixelsPerCM;
       }
 
-      NumberBlob newBlob = new NumberBlob(buttons[7].posX - 10, buttons[7].posY, newDiam, int(tally), color(150), buttons[7].shape);
+      NumberBlob newBlob = new NumberBlob(buttons[7].posX - 10, buttons[7].posY + (pixelsPerCM + newDiam), newDiam, int(tally), color(150), buttons[7].shape);
 
 
       blobList.add(newBlob);
@@ -156,3 +156,7 @@ void handleBlobs() {
   }
 }
 
+void summonBlob(int buttonIndex, int value){
+  NumberBlob newBlob = new NumberBlob(buttons[buttonIndex].posX, buttons[buttonIndex].posY + pixelsPerCM, pixelsPerCM, value, color(150), buttons[buttonIndex].shape);
+  blobList.add(newBlob);
+}

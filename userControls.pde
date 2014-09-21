@@ -7,14 +7,21 @@ void mousePressed() {
       // And if not in smash mode, bind the mouse location to the box with a spring
       if (!smashMode) {
         spring.bind(mouseX, mouseY, thisBlob);
-      } else if (abs(thisBlob.value) != 1 &&!exploding && !thisBlob.newborn) {
-        smashBlob(thisBlob);
-        thisBlob.dead = true;
-        thisBlob.killBody();
+        //and if smashMode is on, and smashing the blob isn't going to result in fractions...
+      } else { 
+        if (abs(thisBlob.value) != 1 &&!exploding && !thisBlob.newborn) {
+          smashBlob(thisBlob);
+          thisBlob.dead = true;
+          thisBlob.killBody();
+        } else if (abs(thisBlob.value) == 1) {
+          //alert the user they are trying to smash a fundamental unit!
+          kludgeTally ++;
+        }
       }
     }
   }
 }
+
 
 
 void mouseReleased() {
@@ -22,8 +29,8 @@ void mouseReleased() {
 
   if (buttons[0].mouseIn() && buttons[0].state == "down") {
     smashMode = !smashMode;
+    kludgeTally = 0;
     if (smashMode) {
-
       buttons[0].buttonText = "!";
     } else {
 
@@ -31,17 +38,28 @@ void mouseReleased() {
     }
   }
 
-    if (buttons[5].mouseIn() && buttons[5].state == "down") {
-      swapShapes();
-    }
-   if (buttons[buttons.length - 1].mouseIn() && buttons[buttons.length - 1].state == "down") {
-      mergeBlobs();
-    }
+
+  if (buttons[1].mouseIn() && buttons[1].state == "down") {
+    summonBlob(1, 1);
+  }
+  if (buttons[2].mouseIn() && buttons[2].state == "down") {
+    summonBlob(2, 0);
+  }
+  if (buttons[3].mouseIn() && buttons[3].state == "down") {
+    summonBlob(3, -1);
+  }
+
+  if (buttons[5].mouseIn() && buttons[5].state == "down") {
+    swapShapes();
+  }
+  if (buttons[buttons.length - 1].mouseIn() && buttons[buttons.length - 1].state == "down") {
+    mergeBlobs();
+  }
 }
 
 
 
-void makeButtons(){
+void makeButtons() {
   ArrayList buttonGroup1 = new ArrayList();
   for (int i = 0; i < 4; i++) {
     Button newButton = new Button ((i+1) * (arenaWidth - bucketWidth)/5, 50, 1*pixelsPerCM, "", "ball", "available");
@@ -64,22 +82,26 @@ void makeButtons(){
   smashButton.buttonText = "@";
   Button posButton = (Button) buttonGroup1.get(1);
   posButton.buttonText = "+";
+  //posButton.state = "inactive";
   Button zeroButton = (Button) buttonGroup1.get(2);
   zeroButton.symbolSize = 20;
   zeroButton.symbolFont = font20;
   zeroButton.buttonText = "o";
+  //zeroButton.state = "inactive";
   Button negButton = (Button) buttonGroup1.get(3);
   negButton.buttonText = "-";
+  //negButton.state = "inactive";
 
 
   Button colButton = (Button) buttonGroup2.get(0);
+  colButton.state = "inactive";
   Button shapeButton = (Button) buttonGroup2.get(1);
   Button pauseButton = (Button) buttonGroup2.get(2);
+  pauseButton.state = "inactive";
   shapeButton.buttonText = "?";
   shapeButton.shape = "box";
 
-  Boundary mergeWall = (Boundary) boundaries.get(4);
-  Button mergeButton = new Button (mergeWall.posX, arenaHeight - mergeWall.boundaryHeight/2, 1*pixelsPerCM, "=", "ball", "available");
+  Button mergeButton = new Button (arenaWidth - 0.5*bucketWidth -10, 50, 1*pixelsPerCM, "=", "ball", "available");
   mergeButton.symbolSize = 42;
   mergeButton.symbolFont = font42;
   buttons = new Button[8];
@@ -96,17 +118,39 @@ void makeButtons(){
 void renderButtons(Button[] b) {
 
   for (int i = 0; i < b.length; i++) {
-    if (i == b.length - 1) {
-      noStroke();
-      fill(0);
-      if (b[i].shape == "ball") {
-        ellipse(b[i].posX, b[i].posY, b[i].diam, b[i].diam);
-      } else {
-        rect(b[i].posX, b[i].posY, b[i].diam, b[i].diam);
-      }
-    }
+
     b[i].update();
     b[i].display();
   }
+}
+
+//this function starts drawing circles around the smash/throw selector if the user persistently tries to smash units
+void drawHint() {
+  strokeWeight(5);
+  noFill();
+  stroke(255);
+  pushMatrix();
+  translate(buttons[0].posX, buttons[0].posY);
+  if (kludgeTally > 3) {
+    if (buttons[0].shape == "ball") {
+      ellipseMode(CENTER);
+      ellipse(0, 0, 1.5*pixelsPerCM, 1.5*pixelsPerCM);
+    } else {
+      rectMode(CENTER);
+      rect(0, 0, 1.5*pixelsPerCM, 1.5*pixelsPerCM);
+    }
+
+    if (kludgeTally > 7) {
+      stroke(200);
+      if (buttons[0].shape == "ball") {
+        ellipseMode(CENTER);
+        ellipse(0, 0, 2.0*pixelsPerCM, 2.0*pixelsPerCM);
+      } else {
+        rectMode(CENTER);
+        rect(0, 0, 2.0*pixelsPerCM, 2.0*pixelsPerCM);
+      }
+    }
+  }
+  popMatrix();
 }
 

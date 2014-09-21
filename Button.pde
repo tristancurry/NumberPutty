@@ -66,9 +66,10 @@ class Button {
     }
   }
 
-  void update() {
+    void update() {
+      setButtonCol();
     //this is to control the appearance & state of the buttons
-    if (state != "inactive" && visible) {
+    if (state != "inactive") {
       if (state == "down") {
         if (mousePressed) {
           if (!mouseIn()) {
@@ -98,6 +99,7 @@ class Button {
       }
     }
   }
+
 
   void display() {
     if (visible) {

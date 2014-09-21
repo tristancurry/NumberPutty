@@ -32,10 +32,10 @@ class NumberBlob {
     posY = posY_;
 
     diam = diam_;
-    
+
     value = value_;
     col = col_;
-    
+
     shape = shape_;
     newborn = true;
     dead = false;
@@ -46,11 +46,11 @@ class NumberBlob {
   }
 
   // This function removes the particle from the box2d world
-  
+
   void killBody() {
     box2d.destroyBody(body);
   }
-  
+
   //this function is used to test if some coords are within the shape
   boolean contains(float x, float y) {
     Vec2 worldPoint = box2d.coordPixelsToWorld(x, y);
@@ -86,6 +86,13 @@ class NumberBlob {
     textSize(20);
     text(value, 0, 0);
 
+    //do a thing to make 9 and 6 distinguishable
+    if (value == 6 || value == 9) {
+      strokeWeight(2);
+      stroke(255);
+      line(-0.3*textWidth(str(value)), 1+ 0.5*20, 0.3*textWidth(str(value)), 1+ 0.5*20);
+    }
+
     popMatrix();
   }
 
@@ -114,7 +121,7 @@ class NumberBlob {
 
       body.createFixture(fd);
     } else {
-      
+
       // Define a polygon (this is what we use for a rectangle)
       PolygonShape sd = new PolygonShape();
       float box2dWidth = box2d.scalarPixelsToWorld(diam_/2);

@@ -23,6 +23,13 @@ float bucketWidth;
 boolean smashMode = false;
 boolean exploding = false;
 boolean zeroAllowed = true;
+boolean zeroSplittingAllowed = true;
+boolean unitsAllowed = true;
+boolean negativeAllowed = true;
+
+int kludgeTally = 0;
+int totalElements;
+int totalValue;
 
 float controlDiameterCM = 1;
 float controlPaddingPC = 0.02;
@@ -32,6 +39,7 @@ int budget = 72;
 ArrayList boundaries;
 ArrayList blobList;
 Button[] buttons;
+int[] species;
 
 
 Spring spring;
@@ -42,7 +50,7 @@ PFont font42;
 
 void setup() {
 
-  size(1024, 640);  // size always goes first!
+  size(960, 540);  // size always goes first!
   if (frame != null) {
     frame.setResizable(true);
     frame.setBackground(new java.awt.Color(255, 255, 255));
@@ -56,7 +64,7 @@ void setup() {
   pixelsPerInch = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
   pixelsPerCM = int(round(pixelsPerInch/2.55));
 
- 
+
 
   //Initialise box2d physics, create the world
   box2d = new Box2DProcessing(this);
@@ -64,35 +72,32 @@ void setup() {
   box2d.setGravity(0, -60);
 
   makeArena();
-  
+
   spring = new Spring();
 
 
   blobList = new ArrayList();
   for (int i = 0; i < 10; i++) {
-    NumberBlob newBlob = new NumberBlob (width/2, height/2, 1*pixelsPerCM, 1, color(150), "ball");
-    blobList.add(newBlob);
-  }
-  
-  
-  for (int i = 0; i < 10; i++) {
-    NumberBlob newBlob = new NumberBlob (width/2, height/2, 1*pixelsPerCM, -1, color(255-150), "ball");
+    NumberBlob newBlob = new NumberBlob ((arenaWidth - bucketWidth)/2, height/2, 1*pixelsPerCM, 1, color(150), "ball");
     blobList.add(newBlob);
   }
 
-  for (int i = 0; i < 3; i++) {
-    NumberBlob newBlob = new NumberBlob (width/2, height/2, floor(pow(5, (1/3.))*pixelsPerCM), 5, color(150), "ball");
+
+  for (int i = 0; i < 10; i++) {
+    NumberBlob newBlob = new NumberBlob ((arenaWidth - bucketWidth)/2, height/2, 1*pixelsPerCM, -1, color(255-150), "ball");
     blobList.add(newBlob);
   }
+
+
 
   for (int i = 0; i < 1; i++) {
-    NumberBlob newBlob = new NumberBlob (width/2, height/2, floor(pow(budget, (1/3.))*pixelsPerCM), budget, color(150), "ball");
+    NumberBlob newBlob = new NumberBlob ((arenaWidth - bucketWidth)/2, height/2, floor(pow(20, (1/3.))*pixelsPerCM), 20, color(150), "ball");
     blobList.add(newBlob);
   }
 
   makeButtons();
-  
-  
+
+  species = new int[2*budget + 1];
 
   background(0);
 
@@ -105,49 +110,53 @@ void setup() {
 void draw() {
   background(0);
 
-
-
-  //temporary labels
-  fill(255);
-  textFont(font12);
-  textSize(12);
-  text("Left-drag to sling the blobs around.", arenaWidth/2, 0.05*arenaHeight);
-  text("Right-click to switch between balls and boxes :D (temporary assignment).", arenaWidth/2, 0.1*arenaHeight);
-  text("This will be toggled by a button, as will the blob-explosion cursor.", arenaWidth/2, 0.15*arenaHeight);
-  pushMatrix();
-  translate(arenaWidth - 0.5*bucketWidth, arenaHeight/2);
-  rotate(HALF_PI);
-
-  text("This is where you put blobs to be combined.", 0, 0);
-  text("The 'combine' button will be about halfway up the short wall.", 0, 0.15*bucketWidth);
-  translate(0, - bucketWidth);
-  text("Information about populations will be shown here.", 0, 0);
-  popMatrix();
-  pushMatrix();
-  translate(width/2, height - 10);
-  fill(255);
-  text("Tristan Miller 2014. Questions & suggestions to tristan.miller@asms.sa.edu.au", 0, 0);
-  popMatrix();
-  box2d.step();
-
-
-
+  totalElements = 0;
+  totalValue = 0;
+  for(int i = 0; i< species.length;i++){
+    species[i] = 0;
+  }
   spring.update(mouseX, mouseY);
 
-
+  fill(40);
+  rectMode(CENTER);
+  noStroke();
+  pushMatrix();
+  translate(arenaWidth - 0.5*bucketWidth - 12.5, arenaHeight/2);
+  rect(0, 0, bucketWidth, arenaHeight -25);
+  popMatrix();
   for (int i = 0; i < boundaries.size (); i++) {
     Boundary wall = (Boundary) boundaries.get(i);
     wall.display();
   }
 
+
   for (int i = 0; i < blobList.size (); i++) {
     NumberBlob thisBlob = (NumberBlob) blobList.get(i);
+    if (thisBlob.value < 0) {
+      thisBlob.col = color(105);
+    }
     thisBlob.display();
+    
+    //calculate various totals
+    totalValue = totalValue + thisBlob.value;
+    totalElements = totalElements + abs(thisBlob.value);
+    if (thisBlob.value == 0) {
+      totalElements++;
+    }
+    species[thisBlob.value + budget]++;
   }
 
+ if(totalElements >= budget){
+   zeroAllowed = false;
+   zeroSplittingAllowed = false;
+   buttons[2].state="inactive";
+ }
+  
+  
+  renderButtons(buttons);
+  drawHint();
 
 
-renderButtons(buttons);
 
 
 
@@ -155,12 +164,69 @@ renderButtons(buttons);
 
   spring.display();
   handleBlobs();
+
+
+  //temporary labels
+  fill(255);
+  textAlign(CENTER);
+  textFont(font12);
+  textSize(12);
+  if (!smashMode) {
+    text("Drag and release the blobs to throw them around.", (arenaWidth - bucketWidth)/2, 0.2*arenaHeight);
+    text("Or press the top-left button to activate the smashing tool!", (arenaWidth - bucketWidth)/2, 0.25*arenaHeight);
+  } else {
+    text("Click the blobs to smash them into smaller bits!", (arenaWidth - bucketWidth)/2, 0.2*arenaHeight);
+    text("Or press the top-left button if you want to throw them again!", (arenaWidth - bucketWidth)/2, 0.25*arenaHeight);
+  }
+  text("All controls are available but will be introduced gradually in the final rev.", (arenaWidth - bucketWidth)/2, 0.35*arenaHeight);
+  pushMatrix();
+  translate(arenaWidth - 0.6*bucketWidth, arenaHeight/2);
+
+  rotate(HALF_PI);
+  text("This is where you put blobs to be combined.", 0, -0.30*bucketWidth);
+  text("Press the button above this section to do it!", 0, -0.15*bucketWidth);
+  text("<--------------------------------------------", 0, 0.0*bucketWidth);
+  popMatrix();
+  pushMatrix();
+  translate((width +arenaWidth)/2, 50);
+  textFont(font42);
+  textSize(42);
+  text("Total : " + totalValue, 0, 0);
+  translate(0,80);
+  textFont(font42);
+  textSize(42);
+    text("pp : " + totalElements, 0, 0);
+  textFont(font12);
+  textSize(12);
+
+  popMatrix();
+  pushMatrix();
+  translate(width/2, height - 10);
+  fill(255);
+  text("Tristan Miller 2014. Questions & suggestions to tristan.miller@asms.sa.edu.au", 0, 0);
+  popMatrix();
+  
+  //display the totals
+  textSize(20);
+  textFont(font20);
+  pushMatrix();
+  translate((width+arenaWidth)/2,160);
+  fill(255);
+  translate(0,0);
+  textAlign(RIGHT);
+  for(int i = 0; i<species.length; i++){
+    if(species[i] > 0){
+      
+      text(i-72 + " : ",0,0);
+      translate(3*textWidth("A"),0);
+      text(species[i],0,0);
+      translate(-3*textWidth("A"), 20);
+    }
+  }
+popMatrix();
+  
+  box2d.step();
 }
-
-
-
-
-
 
 
 
