@@ -52,7 +52,6 @@ void setup() {
   arenaHeight = 0.95*height;
 
 
-  println(budget);
   int budgetBasedOnArena = int(floor(0.5*arenaHeight*(arenaWidth)/(sq(pixelsPerCM))));
   println(budgetBasedOnArena);
   if (budgetBasedOnArena < budget) {
@@ -116,6 +115,7 @@ void setup() {
 
 
 void draw() {
+  println(mouseX);
   background(0);
   
   //temporary labels
@@ -180,11 +180,20 @@ void mousePressed() {
 void mouseReleased() {
   spring.destroy();
   if (mouseButton == RIGHT) {
-    swapToCircles();
+    swapShape();
   }
 }
 
-void swapToCircles() {
+/*
+swapShape() has to 
+1/instantiate new blobs of the opposite type into a local ArrayList
+2/pass the corresponding, existing blobs' parameters to the new blobs
+3/remove the original blobs (of the old shape) from the Box2D world and clear the input ArrayList
+4/instantiate blobs of the desired shape into the input ArrayList from the local ArrayList
+5/pass the corresponding parameters to these blobs
+6/remove the local ArrayList's blobs from the world and from memory
+*/
+void swapShape() {
   ArrayList tempList = new ArrayList();
   int blobPop = blobList.size();
   for (int i = 0; i < blobPop; i++) {
