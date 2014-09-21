@@ -52,10 +52,10 @@ PFont font42;
 void setup() {
 
   size(960, 540);  // size always goes first!
-  if (frame != null) {
+  /*if (frame != null) {
     frame.setResizable(true);
     frame.setBackground(new java.awt.Color(255, 255, 255));
-  }
+  }*/
 
   font12 = loadFont("ChicagoFLF-12.vlw");
   font20 = loadFont("ChicagoFLF-20.vlw");
