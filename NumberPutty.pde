@@ -53,7 +53,6 @@ void setup() {
 
 
   int budgetBasedOnArena = int(floor(0.5*arenaHeight*(arenaWidth)/(sq(pixelsPerCM))));
-  println(budgetBasedOnArena);
   if (budgetBasedOnArena < budget) {
     budget = budgetBasedOnArena;
   }
@@ -115,7 +114,6 @@ void setup() {
 
 
 void draw() {
-  println(mouseX);
   background(0);
   
   //temporary labels
