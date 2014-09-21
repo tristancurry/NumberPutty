@@ -21,7 +21,7 @@ class NumberBlob {
   String shape;
 
   float angle;
-
+  boolean newborn;
   boolean dead;
   Vec2 pos;
 
@@ -37,7 +37,7 @@ class NumberBlob {
     col = col_;
     
     shape = shape_;
-
+    newborn = true;
     dead = false;
 
 

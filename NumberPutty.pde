@@ -20,6 +20,8 @@ float arenaWidth;
 float arenaHeight;
 float bucketWidth;
 
+boolean smashMode = false;
+boolean exploding = false;
 
 float controlDiameterCM = 1;
 float controlPaddingPC = 0.02;
@@ -28,9 +30,7 @@ int budget = 72;
 
 ArrayList boundaries;
 ArrayList blobList;
-ArrayList buttonGroup1;
-ArrayList buttonGroup2;
-Button mergeButton;
+Button[] buttons;
 
 
 Spring spring;
@@ -106,42 +106,9 @@ void setup() {
     blobList.add(newBlob);
   }
 
-  buttonGroup1 = new ArrayList();
-  for (int i = 0; i < 4; i++) {
-    Button newButton = new Button ((i+1) * (arenaWidth - bucketWidth)/5, 50, 1*pixelsPerCM, "", "box", "available");
-    newButton.symbolSize = 42;
-    newButton.symbolFont = font42;
-    buttonGroup1.add(newButton);
-  }
-
-  Button smashButton = (Button) buttonGroup1.get(0);
-  smashButton.symbolSize = 20;
-  smashButton.symbolFont = font20;
-  smashButton.buttonText = ":";
-  Button posButton = (Button) buttonGroup1.get(1);
-  posButton.buttonText = "+";
-  Button zeroButton = (Button) buttonGroup1.get(2);
-  zeroButton.symbolSize = 20;
-  zeroButton.symbolFont = font20;
-  zeroButton.buttonText = "o";
-  Button negButton = (Button) buttonGroup1.get(3);
-  negButton.buttonText = "-";
-
-  buttonGroup2 = new ArrayList();
-  for (int i = 0; i < 3; i++) {
-    Button newButton = new Button ((1-controlPaddingPC)*width - 0.5*pixelsPerCM,(i+1)*height/4,pixelsPerCM ,"", "box", "available");
-    buttonGroup2.add(newButton);
-  }
+  makeButtons();
   
-  Button shapeButton = (Button) buttonGroup2.get(1);
-  shapeButton.buttonText = "?";
-  shapeButton.shape = "ball";
-
-  Boundary mergeWall = (Boundary) boundaries.get(4);
-  mergeButton = new Button (mergeWall.posX, arenaHeight - mergeWall.boundaryHeight/2, 1*pixelsPerCM, "=", "box", "available");
-  mergeButton.symbolSize = 42;
-  mergeButton.symbolFont = font42;
-
+  
 
   background(0);
 
@@ -194,112 +161,24 @@ void draw() {
     thisBlob.display();
   }
 
-  for (int i = 0; i < buttonGroup1.size (); i++) {
-    Button thisButton = (Button) buttonGroup1.get(i);
-    thisButton.update();
-    thisButton.display();
-  }
-  
-    for (int i = 0; i < buttonGroup2.size (); i++) {
-    Button thisButton = (Button) buttonGroup2.get(i);
-    thisButton.update();
-    thisButton.display();
-  }
 
-  noStroke();
-  fill(0);
-  if (mergeButton.shape == "ball") {
-    ellipse(mergeButton.posX, mergeButton.posY, mergeButton.diam, mergeButton.diam);
-  } else {
-    rect(mergeButton.posX, mergeButton.posY, mergeButton.diam, mergeButton.diam);
-  }
-  mergeButton.update();
-  mergeButton.display();
+
+renderButtons(buttons);
+
+
+
 
 
   spring.display();
-}
-
-
-void mousePressed() {
-  // Check to see if the mouse was clicked on the box
-  for (int i = 0; i < blobList.size (); i++) {
-    NumberBlob thisBlob = (NumberBlob) blobList.get(i);
-
-    if (thisBlob.contains(mouseX, mouseY)) {
-      // And if so, bind the mouse location to the box with a spring
-      if (mouseButton == LEFT) {
-        spring.bind(mouseX, mouseY, thisBlob);
-      }
-      //} else if (mouseButton == RIGHT && thisBox.value > 1 && !exploding) {
-      // explode(thisBox);
-      //thisBox.dead = true;
-      //}
-    }
-  }
-}
-
-
-void mouseReleased() {
-  spring.destroy();
-  if (mouseButton == RIGHT) {
-    swapBlobShape();
-    for (int i = 0; i < buttonGroup1.size (); i++) {
-      Button thisButton = (Button) buttonGroup1.get(i);
-      thisButton.swapButtonShape();
-    }
-        for (int i = 0; i < buttonGroup2.size (); i++) {
-      Button thisButton = (Button) buttonGroup2.get(i);
-      thisButton.swapButtonShape();
-    }
-    mergeButton.swapButtonShape();
-  }
+  handleBlobs();
 }
 
 
 
 
-/*
-swapBlobShape() has to 
- 1/instantiate new blobs of the opposite type into a local ArrayList
- 2/pass the corresponding, existing blobs' parameters to the new blobs
- 3/remove the original blobs (of the old shape) from the Box2D world and clear the input ArrayList
- 4/instantiate blobs of the desired shape into the input ArrayList from the local ArrayList
- 5/pass the corresponding parameters to these blobs
- 6/remove the local ArrayList's blobs from the world and from memory
- */
-void swapBlobShape() {
-  ArrayList tempList = new ArrayList();
-  int blobPop = blobList.size();
-  for (int i = 0; i < blobPop; i++) {
-    NumberBlob thisBlob = (NumberBlob) blobList.get(i);
-
-    String nextShape = "";
-    if (thisBlob.shape == "ball") {
-      nextShape = "box";
-    } else {
-      nextShape = "ball";
-    }
-
-    NumberBlob tempBlob = new NumberBlob(thisBlob.pos.x, thisBlob.pos.y, thisBlob.diam, thisBlob.value, thisBlob.col, nextShape);
-    tempBlob.body.setTransform(tempBlob.body.getPosition(), thisBlob.body.getAngle());
-    tempBlob.body.setLinearVelocity(thisBlob.body.getLinearVelocity());
-    tempBlob.body.setAngularVelocity(thisBlob.body.getAngularVelocity());
-    tempList.add(tempBlob);
-    thisBlob.killBody();
-  }
-
-  blobList = new ArrayList();
 
 
-  for (int i = 0; i < tempList.size (); i++) {
-    NumberBlob tempBlob = (NumberBlob) tempList.get(i);
-    NumberBlob replaceBlob = new NumberBlob(tempBlob.posX, tempBlob.posY, tempBlob.diam, tempBlob.value, tempBlob.col, tempBlob.shape);
-    replaceBlob.body.setTransform(replaceBlob.body.getPosition(), tempBlob.body.getAngle());
-    replaceBlob.body.setLinearVelocity(tempBlob.body.getLinearVelocity());
-    replaceBlob.body.setAngularVelocity(tempBlob.body.getAngularVelocity());
-    blobList.add(replaceBlob);
-    tempBlob.killBody();
-  }
-}
+
+
+
 
