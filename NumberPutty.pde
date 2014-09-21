@@ -53,9 +53,9 @@ void setup() {
 
   size(960, 540);  // size always goes first!
   /*if (frame != null) {
-    frame.setResizable(true);
-    frame.setBackground(new java.awt.Color(255, 255, 255));
-  }*/
+   frame.setResizable(true);
+   frame.setBackground(new java.awt.Color(255, 255, 255));
+   }*/
 
   font12 = loadFont("ChicagoFLF-12.vlw");
   font20 = loadFont("ChicagoFLF-20.vlw");
@@ -100,6 +100,19 @@ void setup() {
 
 void draw() {
   background(0);
+
+  fill(255);
+  textAlign(CENTER);
+  textFont(font12);
+  textSize(12);
+  if (!smashMode) {
+    text("Drag and release the blobs to throw them around.", (arenaWidth - bucketWidth)/2, 0.2*arenaHeight);
+    text("Or press the top-left button to activate the smashing tool!", (arenaWidth - bucketWidth)/2, 0.25*arenaHeight);
+  } else {
+    text("Click the blobs to smash them into smaller bits!", (arenaWidth - bucketWidth)/2, 0.2*arenaHeight);
+    text("Or press the top-left button if you want to throw them again!", (arenaWidth - bucketWidth)/2, 0.25*arenaHeight);
+  }
+  text("All controls are available but will be introduced gradually in the final rev.", (arenaWidth - bucketWidth)/2, 0.35*arenaHeight);
 
   totalElements = 0;
   totalValue = 0;
@@ -151,7 +164,7 @@ void draw() {
       buttons[3].state = "inactive";
       buttons[1].state = "inactive";
     }
-  } else if(budgetProblem){
+  } else if (budgetProblem) {
     if (unitsAllowed) {
       buttons[1].state = "available";
     }
@@ -166,8 +179,6 @@ void draw() {
   }
 
 
-  renderButtons(buttons);
-  drawHint();
 
 
 
@@ -180,22 +191,22 @@ void draw() {
 
 
   //temporary labels
-  fill(255);
-  textAlign(CENTER);
-  textFont(font12);
-  textSize(12);
-  if (!smashMode) {
-    text("Drag and release the blobs to throw them around.", (arenaWidth - bucketWidth)/2, 0.2*arenaHeight);
-    text("Or press the top-left button to activate the smashing tool!", (arenaWidth - bucketWidth)/2, 0.25*arenaHeight);
-  } else {
-    text("Click the blobs to smash them into smaller bits!", (arenaWidth - bucketWidth)/2, 0.2*arenaHeight);
-    text("Or press the top-left button if you want to throw them again!", (arenaWidth - bucketWidth)/2, 0.25*arenaHeight);
-  }
-  text("All controls are available but will be introduced gradually in the final rev.", (arenaWidth - bucketWidth)/2, 0.35*arenaHeight);
+
+
+    fill(40, 100);
+  rectMode(CENTER);
+  noStroke();
+  pushMatrix();
+  translate(arenaWidth - 0.5*bucketWidth - 12.5, arenaHeight/2);
+  rect(0, 0, bucketWidth, arenaHeight -25);
+  popMatrix();
   pushMatrix();
   translate(arenaWidth - 0.6*bucketWidth, arenaHeight/2);
 
   rotate(HALF_PI);
+  fill(255);
+  textSize(12);
+  textFont(font12);
   text("This is where you put blobs to be combined.", 0, -0.30*bucketWidth);
   text("Press the button above this section to do it!", 0, -0.15*bucketWidth);
   text("<--------------------------------------------", 0, 0.0*bucketWidth);
@@ -223,7 +234,7 @@ void draw() {
   textSize(20);
   textFont(font20);
   pushMatrix();
-  translate((width+arenaWidth)/2, 160);
+  translate((width+arenaWidth)/2, 180);
   fill(255);
   translate(0, 0);
   textAlign(RIGHT);
@@ -238,8 +249,11 @@ void draw() {
   }
   popMatrix();
 
+
+  renderButtons(buttons);
+  drawHint();
+
+
   box2d.step();
 }
-
-
 

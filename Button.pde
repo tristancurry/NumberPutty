@@ -14,7 +14,7 @@ class Button {
   String state;   //"available, inactive, hover, down"
 
   color stateCol;
-  color inactiveCol = color(20,40);
+  color inactiveCol = color(20, 40);
   color availableCol = color(190);
   color hoverCol = color(255);
   color downCol  = color (130);
@@ -119,6 +119,7 @@ class Button {
       textFont(symbolFont);
       textSize(symbolSize);
       fill(stateCol);
+      textAlign(CENTER, CENTER);
       text(buttonText, 0, 0);
 
       popMatrix();
