@@ -180,12 +180,12 @@ void mousePressed() {
 void mouseReleased() {
   spring.destroy();
   if (mouseButton == RIGHT) {
-    swapShape();
+    swapBlobShape();
   }
 }
 
 /*
-swapShape() has to 
+swapBlobShape() has to 
 1/instantiate new blobs of the opposite type into a local ArrayList
 2/pass the corresponding, existing blobs' parameters to the new blobs
 3/remove the original blobs (of the old shape) from the Box2D world and clear the input ArrayList
@@ -193,7 +193,7 @@ swapShape() has to
 5/pass the corresponding parameters to these blobs
 6/remove the local ArrayList's blobs from the world and from memory
 */
-void swapShape() {
+void swapBlobShape() {
   ArrayList tempList = new ArrayList();
   int blobPop = blobList.size();
   for (int i = 0; i < blobPop; i++) {

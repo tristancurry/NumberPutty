@@ -1,21 +1,94 @@
 //about time I wrote a button class
+//Tristan Miller 2014
+
+class Button {
+
+  float posX;
+  float posY;
+  float diam;
+  String buttonText;
+
+  String shape;   //"box, ball"
+  String state;   //"available, inactive, hover, down"
+
+  color stateCol;
+  color inactiveCol = color(20);
+  color availableCol = color(200);
+  color hoverCol = color(255);
+  color downCol  = color (100);
+
+  //Constructor//
+
+  Button(float posX_, float posY_, float diam_, String buttonText_, String shape_, String state_) {
+
+    posX = posX_;
+    posY = posY_;
+    diam = diam_;
+    buttonText = buttonText_;
+    shape = shape_;
+    state = state_;
+
+    setButtonCol();
+  }
 
 
-//states available, inactive, hover, clicked
+  void setButtonCol() {
+    if (state == "available") {
+      stateCol = availableCol;
+    } else if (state == "hover") {
+      stateCol = hoverCol;
+    } else if (state == "down") {
+      stateCol = downCol;
+    } else {
+      state = "inactive";
+      stateCol = inactiveCol;
+    }
+  }
 
-//mouse detection
+  //detect mouseover
+  boolean mouseIn() {
+    if (shape == "ball") {
+      if (sq(mouseX - posX) + sq(mouseY - posY) < sq(diam/2)) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      if (sq(mouseX - posX) < sq(diam/2) && sq(mouseY - posY) < sq(diam/2) ) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
 
-//if circular
-//if sq(mouseX - posX) + sq(mouseY - posY) < sq(diam/2)
-//return true
+  void display() {
+    noFill();
+    strokeWeight(3);
+    stroke(stateCol);
 
-//if square
-//if sq(mouseX - posX) < sq(diam/2) && sq(mouseY - posY) < sq(diam/2) 
-//return true
+    translate(posX, posY);
 
+    if (shape == "ball") {
+      ellipseMode(CENTER);
+      ellipse(0, 0, diam, diam);
+    } else {
+      rectMode(CENTER);
+      rect(0, 0, diam, diam);
+    }
 
-//drawing
+    text(buttonText, 0, 0);
+    popMatrix();
+  }
+  
+  
+  void swapButtonShape(){
+    if(shape == "ball"){
+      shape = "box";
+    } else {
+      shape = "ball";
+    }
+  }
+}
 
-//the only thing that changes is the colour.
-//for prototype, we make it greyscale, introducing colour when ready to make themes
 
