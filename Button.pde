@@ -14,7 +14,7 @@ class Button {
   String state;   //"available, inactive, hover, down"
 
   color stateCol;
-  color inactiveCol = color(20);
+  color inactiveCol = color(20,40);
   color availableCol = color(190);
   color hoverCol = color(255);
   color downCol  = color (130);
@@ -66,8 +66,8 @@ class Button {
     }
   }
 
-    void update() {
-      setButtonCol();
+  void update() {
+    setButtonCol();
     //this is to control the appearance & state of the buttons
     if (state != "inactive") {
       if (state == "down") {

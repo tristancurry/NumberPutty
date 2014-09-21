@@ -10,9 +10,12 @@ void mousePressed() {
         //and if smashMode is on, and smashing the blob isn't going to result in fractions...
       } else { 
         if (abs(thisBlob.value) != 1 &&!exploding && !thisBlob.newborn) {
+          if(thisBlob.value == 0 && !zeroSplittingAllowed){
+          } else {
           smashBlob(thisBlob);
           thisBlob.dead = true;
           thisBlob.killBody();
+          }
         } else if (abs(thisBlob.value) == 1) {
           //alert the user they are trying to smash a fundamental unit!
           kludgeTally ++;

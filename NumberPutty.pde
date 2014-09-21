@@ -26,6 +26,7 @@ boolean zeroAllowed = true;
 boolean zeroSplittingAllowed = true;
 boolean unitsAllowed = true;
 boolean negativeAllowed = true;
+boolean budgetProblem = false;
 
 int kludgeTally = 0;
 int totalElements;
@@ -77,21 +78,11 @@ void setup() {
 
 
   blobList = new ArrayList();
-  for (int i = 0; i < 10; i++) {
-    NumberBlob newBlob = new NumberBlob ((arenaWidth - bucketWidth)/2, height/2, 1*pixelsPerCM, 1, color(150), "ball");
-    blobList.add(newBlob);
-  }
-
-
-  for (int i = 0; i < 10; i++) {
-    NumberBlob newBlob = new NumberBlob ((arenaWidth - bucketWidth)/2, height/2, 1*pixelsPerCM, -1, color(255-150), "ball");
-    blobList.add(newBlob);
-  }
 
 
 
-  for (int i = 0; i < 1; i++) {
-    NumberBlob newBlob = new NumberBlob ((arenaWidth - bucketWidth)/2, height/2, floor(pow(20, (1/3.))*pixelsPerCM), 20, color(150), "ball");
+  for (int i = 0; i < 11; i++) {
+    NumberBlob newBlob = new NumberBlob ((arenaWidth - bucketWidth)/2, height/2, floor(pow(i+1, (1/3.))*pixelsPerCM), i+1, color(150), "ball");
     blobList.add(newBlob);
   }
 
@@ -112,7 +103,7 @@ void draw() {
 
   totalElements = 0;
   totalValue = 0;
-  for(int i = 0; i< species.length;i++){
+  for (int i = 0; i< species.length; i++) {
     species[i] = 0;
   }
   spring.update(mouseX, mouseY);
@@ -136,7 +127,7 @@ void draw() {
       thisBlob.col = color(105);
     }
     thisBlob.display();
-    
+
     //calculate various totals
     totalValue = totalValue + thisBlob.value;
     totalElements = totalElements + abs(thisBlob.value);
@@ -146,13 +137,35 @@ void draw() {
     species[thisBlob.value + budget]++;
   }
 
- if(totalElements >= budget){
-   zeroAllowed = false;
-   zeroSplittingAllowed = false;
-   buttons[2].state="inactive";
- }
-  
-  
+  if (totalElements >= budget) {
+    budgetProblem = true;
+    zeroSplittingAllowed = false;
+    buttons[2].state="inactive";
+    if (totalValue >= budget) {
+      buttons[1].state = "inactive";
+      buttons[3].state = "available";
+    } else if (totalValue <= -1*budget) {
+      buttons[3].state = "inactive";
+      buttons[1].state = "available";
+    } else {
+      buttons[3].state = "inactive";
+      buttons[1].state = "inactive";
+    }
+  } else if(budgetProblem){
+    if (unitsAllowed) {
+      buttons[1].state = "available";
+    }
+    if (negativeAllowed) {
+      buttons[3].state = "available";
+    }
+    if (zeroAllowed) {
+      buttons[2].state = "available";
+      zeroSplittingAllowed = true;
+    }
+    budgetProblem = false;
+  }
+
+
   renderButtons(buttons);
   drawHint();
 
@@ -192,10 +205,10 @@ void draw() {
   textFont(font42);
   textSize(42);
   text("Total : " + totalValue, 0, 0);
-  translate(0,80);
+  translate(0, 80);
   textFont(font42);
   textSize(42);
-    text("pp : " + totalElements, 0, 0);
+  text("pp : " + totalElements, 0, 0);
   textFont(font12);
   textSize(12);
 
@@ -205,30 +218,28 @@ void draw() {
   fill(255);
   text("Tristan Miller 2014. Questions & suggestions to tristan.miller@asms.sa.edu.au", 0, 0);
   popMatrix();
-  
+
   //display the totals
   textSize(20);
   textFont(font20);
   pushMatrix();
-  translate((width+arenaWidth)/2,160);
+  translate((width+arenaWidth)/2, 160);
   fill(255);
-  translate(0,0);
+  translate(0, 0);
   textAlign(RIGHT);
-  for(int i = 0; i<species.length; i++){
-    if(species[i] > 0){
-      
-      text(i-72 + " : ",0,0);
-      translate(3*textWidth("A"),0);
-      text(species[i],0,0);
+  for (int i = 0; i<species.length; i++) {
+    if (species[i] > 0) {
+
+      text(i-budget + " : ", 0, 0);
+      translate(3*textWidth("A"), 0);
+      text(species[i], 0, 0);
       translate(-3*textWidth("A"), 20);
     }
   }
-popMatrix();
-  
+  popMatrix();
+
   box2d.step();
 }
-
-
 
 
 
