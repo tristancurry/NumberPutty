@@ -6,6 +6,8 @@ class Button {
   float posX;
   float posY;
   float diam;
+  PFont symbolFont = font20;
+  int symbolSize = 20;
   String buttonText;
 
   String shape;   //"box, ball"
@@ -13,9 +15,11 @@ class Button {
 
   color stateCol;
   color inactiveCol = color(20);
-  color availableCol = color(200);
+  color availableCol = color(190);
   color hoverCol = color(255);
-  color downCol  = color (100);
+  color downCol  = color (130);
+
+  boolean visible = true;
 
   //Constructor//
 
@@ -62,33 +66,70 @@ class Button {
     }
   }
 
-  void display() {
-    noFill();
-    strokeWeight(3);
-    stroke(stateCol);
-
-    translate(posX, posY);
-
-    if (shape == "ball") {
-      ellipseMode(CENTER);
-      ellipse(0, 0, diam, diam);
-    } else {
-      rectMode(CENTER);
-      rect(0, 0, diam, diam);
+  void update() {
+    //this is to control the appearance & state of the buttons
+    if (state != "inactive" && visible) {
+      if (state == "down") {
+        if (mousePressed) {
+          if (!mouseIn()) {
+            stateCol = hoverCol;
+          } else {
+            stateCol = downCol;
+          }
+        } else {
+          state = "available";
+          setButtonCol();
+        }
+      } else {
+        if (state == "hover") {
+          if (mousePressed) {
+            state = "down";
+            setButtonCol();
+          } else if (!mouseIn()) {
+            state = "available";
+            setButtonCol();
+          }
+        } else {
+          if (mouseIn()&&!mousePressed) {
+            state = "hover";
+            setButtonCol();
+          }
+        }
+      }
     }
-
-    text(buttonText, 0, 0);
-    popMatrix();
   }
-  
-  
-  void swapButtonShape(){
-    if(shape == "ball"){
+
+  void display() {
+    if (visible) {
+      noFill();
+      strokeWeight(3);
+      stroke(stateCol);
+      pushMatrix();
+      translate(posX, posY);
+
+      if (shape == "ball") {
+        ellipseMode(CENTER);
+        ellipse(0, 0, diam, diam);
+      } else {
+        rectMode(CENTER);
+        rect(0, 0, diam, diam);
+      }
+      textFont(symbolFont);
+      textSize(symbolSize);
+      fill(stateCol);
+      text(buttonText, 0, 0);
+
+      popMatrix();
+    }
+  }
+
+
+  void swapButtonShape() {
+    if (shape == "ball") {
       shape = "box";
     } else {
       shape = "ball";
     }
   }
 }
-
 
