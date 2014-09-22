@@ -51,7 +51,7 @@ PFont font42;
 
 void setup() {
 
-  size(round(0.6*displayWidth), round(0.6*displayHeight));  // size always goes first!
+  size(round(0.8*displayWidth), round(0.8*displayHeight));  // size always goes first!
 
 
   font12 = loadFont("ChicagoFLF-12.vlw");
