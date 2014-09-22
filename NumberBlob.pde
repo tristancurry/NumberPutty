@@ -116,7 +116,7 @@ class NumberBlob {
       fd.shape = cs;
       // Parameters that affect physics
       fd.density = 1;
-      fd.friction = 0.5;
+      fd.friction = 0.6;
       fd.restitution = 0.4;
 
       body.createFixture(fd);

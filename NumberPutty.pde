@@ -51,11 +51,8 @@ PFont font42;
 
 void setup() {
 
-  size(960, 540);  // size always goes first!
-  /*if (frame != null) {
-   frame.setResizable(true);
-   frame.setBackground(new java.awt.Color(255, 255, 255));
-   }*/
+  size(round(0.6*displayWidth), round(0.6*displayHeight));  // size always goes first!
+
 
   font12 = loadFont("ChicagoFLF-12.vlw");
   font20 = loadFont("ChicagoFLF-20.vlw");
@@ -81,7 +78,7 @@ void setup() {
 
 
 
-  for (int i = 0; i < 11; i++) {
+  for (int i = 0; i < 6; i++) {
     NumberBlob newBlob = new NumberBlob ((arenaWidth - bucketWidth)/2, height/2, floor(pow(i+1, (1/3.))*pixelsPerCM), i+1, color(150), "ball");
     blobList.add(newBlob);
   }
@@ -112,7 +109,8 @@ void draw() {
     text("Click the blobs to smash them into smaller bits!", (arenaWidth - bucketWidth)/2, 0.2*arenaHeight);
     text("Or press the top-left button if you want to throw them again!", (arenaWidth - bucketWidth)/2, 0.25*arenaHeight);
   }
-  text("All controls are available but will be introduced gradually in the final rev.", (arenaWidth - bucketWidth)/2, 0.35*arenaHeight);
+  text("All controls are available here...", (arenaWidth - bucketWidth)/2, 0.35*arenaHeight);
+  text("...but will only be slowly introduced in the final rev.", (arenaWidth - bucketWidth)/2, 0.40*arenaHeight);
 
   totalElements = 0;
   totalValue = 0;
@@ -151,15 +149,21 @@ void draw() {
   }
 
   if (totalElements >= budget) {
+    println("overBudget!");
     budgetProblem = true;
     zeroSplittingAllowed = false;
     buttons[2].state="inactive";
     if (totalValue >= budget) {
       buttons[1].state = "inactive";
-      buttons[3].state = "available";
+      if (totalElements >= budget + 1) {
+        println(" - button should be off");
+        buttons[3].state = "inactive";
+      }
     } else if (totalValue <= -1*budget) {
       buttons[3].state = "inactive";
-      buttons[1].state = "available";
+      if (totalElements >= budget + 1) {
+        buttons[1].state = "inactive";
+      }
     } else {
       buttons[3].state = "inactive";
       buttons[1].state = "inactive";
@@ -220,6 +224,8 @@ void draw() {
   textFont(font42);
   textSize(42);
   text("pp : " + totalElements, 0, 0);
+  translate(0, 80);
+  text("budget : " + budget, 0, 0);
   textFont(font12);
   textSize(12);
 
@@ -234,7 +240,7 @@ void draw() {
   textSize(20);
   textFont(font20);
   pushMatrix();
-  translate((width+arenaWidth)/2, 180);
+  translate((width+arenaWidth)/2, 260);
   fill(255);
   translate(0, 0);
   textAlign(RIGHT);
