@@ -1,4 +1,13 @@
 void mousePressed() {
+  // check to see if the scoop is clicked on
+  if(myScoop.contains(mouseX,mouseY)){
+        spring.bindScoop(mouseX, mouseY, myScoop);
+        myScoop.lastClicked = frameCount;
+        myScoop.held = true;
+  }
+  
+
+  
   // Check to see if the mouse was clicked on the box
   for (int i = 0; i < blobList.size (); i++) {
     NumberBlob thisBlob = (NumberBlob) blobList.get(i);
@@ -36,6 +45,8 @@ void mouseReleased() {
     NumberBlob thisBlob = (NumberBlob) blobList.get(i);
     thisBlob.held = false;
   }
+  myScoop.held = false;
+  myScoop.body.setFixedRotation(false);
 
   if (buttons[0].mouseIn() && buttons[0].state == "down") {
     /*if (smashMode) {
@@ -47,17 +58,17 @@ void mouseReleased() {
   }
 
 
+  if (buttons[0].mouseIn() && buttons[0].state == "down") {
+    summonBlob(0, 1);
+  }
   if (buttons[1].mouseIn() && buttons[1].state == "down") {
-    summonBlob(1, 1);
+    summonBlob(1, 0);
   }
   if (buttons[2].mouseIn() && buttons[2].state == "down") {
-    summonBlob(2, 0);
-  }
-  if (buttons[3].mouseIn() && buttons[3].state == "down") {
-    summonBlob(3, -1);
+    summonBlob(2, -1);
   }
 
-  if (buttons[5].mouseIn() && buttons[5].state == "down") {
+  if (buttons[4].mouseIn() && buttons[4].state == "down") {
     swapShapes();
   }
   if (buttons[buttons.length - 1].mouseIn() && buttons[buttons.length - 1].state == "down") {
@@ -69,8 +80,8 @@ void mouseReleased() {
 
 void makeButtons() {
   ArrayList buttonGroup1 = new ArrayList();
-  for (int i = 0; i < 4; i++) {
-    Button newButton = new Button ((i+1) * (arenaWidth - bucketWidth)/5, 50, 1*pixelsPerCM, "", "ball", "available");
+  for (int i = 0; i < 3; i++) {
+    Button newButton = new Button ((i+1) * (arenaWidth - bucketWidth)/4, 50, 1*pixelsPerCM, "", "ball", "available");
     newButton.symbolSize = 42;
     newButton.symbolFont = font42;
     buttonGroup1.add(newButton);
@@ -84,20 +95,16 @@ void makeButtons() {
     buttonGroup2.add(newButton);
   }
 
-  Button smashButton = (Button) buttonGroup1.get(0);
-  smashButton.symbolSize = 20;
-  smashButton.symbolFont = font20;
-  smashButton.buttonText = "@";
-  smashButton.state = "inactive";
-  Button posButton = (Button) buttonGroup1.get(1);
+
+  Button posButton = (Button) buttonGroup1.get(0);
   posButton.buttonText = "+";
   //posButton.state = "inactive";
-  Button zeroButton = (Button) buttonGroup1.get(2);
+  Button zeroButton = (Button) buttonGroup1.get(1);
   zeroButton.symbolSize = 20;
   zeroButton.symbolFont = font20;
   zeroButton.buttonText = "o";
   //zeroButton.state = "inactive";
-  Button negButton = (Button) buttonGroup1.get(3);
+  Button negButton = (Button) buttonGroup1.get(2);
   negButton.buttonText = "-";
   //negButton.state = "inactive";
 
@@ -113,15 +120,15 @@ void makeButtons() {
   Button mergeButton = new Button (arenaWidth - 0.5*bucketWidth -10, 50, 1*pixelsPerCM, "=", "ball", "available");
   mergeButton.symbolSize = 42;
   mergeButton.symbolFont = font42;
-  buttons = new Button[8];
-  buttons[0] = smashButton;
-  buttons[1] = posButton;
-  buttons[2] = zeroButton;
-  buttons[3] = negButton;
-  buttons[4] = colButton;
-  buttons[5] = shapeButton;
-  buttons[6] = pauseButton;
-  buttons[7] = mergeButton;
+  buttons = new Button[7];
+
+  buttons[0] = posButton;
+  buttons[1] = zeroButton;
+  buttons[2] = negButton;
+  buttons[3] = colButton;
+  buttons[4] = shapeButton;
+  buttons[5] = pauseButton;
+  buttons[6] = mergeButton;
 }
 
 void renderButtons(Button[] b) {
@@ -133,4 +140,38 @@ void renderButtons(Button[] b) {
   }
 }
 
+void toggleButtonActivation(){
 
+  if (totalElements >= budget) {
+    budgetProblem = true;
+    zeroSplittingAllowed = false;
+    buttons[1].state="inactive";
+    if (totalValue >= budget) {
+      buttons[0].state = "inactive";
+      if (totalElements >= budget + 1) {
+        buttons[2].state = "inactive";
+      }
+    } else if (totalValue <= -1*budget) {
+      buttons[2].state = "inactive";
+      if (totalElements >= budget + 1) {
+        buttons[0].state = "inactive";
+      }
+    } else {
+      buttons[2].state = "inactive";
+      buttons[0].state = "inactive";
+    }
+  } else if (budgetProblem) {
+    if (unitsAllowed) {
+      buttons[0].state = "available";
+    }
+    if (negativeAllowed) {
+      buttons[2].state = "available";
+    }
+    if (zeroAllowed) {
+      buttons[1].state = "available";
+      zeroSplittingAllowed = true;
+    }
+    budgetProblem = false;
+  }
+
+}

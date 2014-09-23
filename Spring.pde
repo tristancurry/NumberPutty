@@ -20,7 +20,7 @@ class Spring {
   void update(float x, float y) {
     if (mouseJoint != null) {
       // Always convert to world coordinates!
-      Vec2 mouseWorld = box2d.coordPixelsToWorld(x,y);
+      Vec2 mouseWorld = box2d.coordPixelsToWorld(x, y);
       mouseJoint.setTarget(mouseWorld);
     }
   }
@@ -28,9 +28,9 @@ class Spring {
   void display() {
     if (mouseJoint != null) {
       // We can get the two anchor points
-      Vec2 v1 = new Vec2(0,0);
+      Vec2 v1 = new Vec2(0, 0);
       mouseJoint.getAnchorA(v1);
-      Vec2 v2 = new Vec2(0,0);
+      Vec2 v2 = new Vec2(0, 0);
       mouseJoint.getAnchorB(v2);
       // Convert them to screen coordinates
       v1 = box2d.coordWorldToPixels(v1);
@@ -38,7 +38,7 @@ class Spring {
       // And just draw a line
       stroke(255);
       strokeWeight(2);
-      line(v1.x,v1.y,v2.x,v2.y);
+      line(v1.x, v1.y, v2.x, v2.y);
     }
   }
 
@@ -49,13 +49,13 @@ class Spring {
   void bind(float x, float y, NumberBlob blob) {
     // Define the joint
     MouseJointDef md = new MouseJointDef();
-    
+
     // Body A is just a fake ground body for simplicity (there isn't anything at the mouse)
     md.bodyA = box2d.getGroundBody();
     // Body 2 is the box's body
     md.bodyB = blob.body;
     // Get the mouse location in world coordinates
-    Vec2 mp = box2d.coordPixelsToWorld(x,y);
+    Vec2 mp = box2d.coordPixelsToWorld(x, y);
     // And that's the target
     md.target.set(mp);
     // Some stuff about how strong and bouncy the spring should be
@@ -70,6 +70,31 @@ class Spring {
     mouseJoint = (MouseJoint) box2d.world.createJoint(md);
   }
 
+  void bindScoop(float x, float y, Scoop thisScoop) {
+    // Define the joint
+    thisScoop.body.setFixedRotation(true);
+    MouseJointDef md = new MouseJointDef();
+
+    // Body A is just a fake ground body for simplicity (there isn't anything at the mouse)
+    md.bodyA = box2d.getGroundBody();
+    // Body 2 is the box's body
+    md.bodyB = thisScoop.body;
+    // Get the mouse location in world coordinates
+    Vec2 mp = box2d.coordPixelsToWorld(x, y);
+    // And that's the target
+    md.target.set(mp);
+    // Some stuff about how strong and bouncy the spring should be
+    md.maxForce = 10000.0 * thisScoop.body.m_mass;
+    md.frequencyHz = 100.0;
+    md.dampingRatio = 100.0;
+    // Wake up body!
+    //box.body.wakeUp();
+
+    // Make the joint!
+    mouseJoint = (MouseJoint) box2d.world.createJoint(md);
+  }
+
+
   void destroy() {
     // We can get rid of the joint when the mouse is released
     if (mouseJoint != null) {
@@ -77,7 +102,5 @@ class Spring {
       mouseJoint = null;
     }
   }
-
 }
-
 

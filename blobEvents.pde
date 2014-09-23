@@ -28,7 +28,7 @@ void mergeBlobs() {
         newDiam = pixelsPerCM;
       }
 
-      NumberBlob newBlob = new NumberBlob(buttons[7].posX, buttons[7].posY + (pixelsPerCM + newDiam)/2, newDiam, int(tally), color(150), buttons[7].shape);
+      NumberBlob newBlob = new NumberBlob(buttons[buttons.length - 1].posX, buttons[buttons.length - 1].posY + (pixelsPerCM + newDiam)/2, newDiam, int(tally), color(random(70,200),random(70,200),random(70,200)), buttons[buttons.length - 1].shape);
 
 
       blobList.add(newBlob);
@@ -62,7 +62,8 @@ void smashBlob(NumberBlob thisBlob) {
   exploding = true;
 
   for (int i= 0; i<2; i ++) {
-    float ang = thisBlob.body.getAngle() + random(0, PI) + i*HALF_PI;
+    float ang = thisBlob.body.getAngle() + random(0, PI);
+    ang = -1*ang;
     Vec2 v = new Vec2(0, 0);
     Vec2 p;
     float d;
@@ -70,21 +71,30 @@ void smashBlob(NumberBlob thisBlob) {
     d = pow(abs(frag[i]), 1/3.)*pixelsPerCM;
     d = constrain(d, pixelsPerCM, 10e6);
     p = new Vec2(d*cos(ang), d*sin(ang));
+
+    p.x = p.x+thisBlob.pos.x;
+    p.y = p.y + thisBlob.pos.y;
     if (thisBlob.pos.x < arenaWidth - bucketWidth) {
-      p.x = constrain(thisBlob.pos.x + p.x, d, arenaWidth - bucketWidth - d);
+      p.x = constrain(p.x, d, arenaWidth - bucketWidth - d);
     } else {
-      p.x = constrain(thisBlob.pos.x + p.x, arenaWidth - bucketWidth + d, arenaWidth - d);
+      p.x = constrain(p.x, arenaWidth - bucketWidth + d, arenaWidth - d);
     }
-    p.y = constrain(thisBlob.pos.y + p.y, d, arenaHeight - d);
+    p.y = constrain(p.y, d, arenaHeight - d);
 
 
 
-    v = v.addLocal(p);
-    v = v.mulLocal(4*d/(60*pixelsPerCM));
+
+    //v = v.mulLocal(100*d/(60*pixelsPerCM));
     NumberBlob newBlob = new NumberBlob(p.x, p.y, d, frag[i], thisBlob.col, thisBlob.shape);
 
-    newBlob.body.setTransform(newBlob.body.getPosition(), thisBlob.body.getAngle());
-    newBlob.body.setLinearVelocity(v.addLocal(thisBlob.body.getLinearVelocity()));
+    newBlob.body.setTransform(newBlob.body.getPosition(), -1*thisBlob.body.getAngle());
+    v = newBlob.body.getLinearVelocity();
+    v = v.mulLocal(0);
+    v = v.addLocal(new Vec2(p.x - thisBlob.pos.x, -1*p.y + thisBlob.pos.y));
+    v = v.mulLocal(2);
+    v = v.addLocal(thisBlob.body.getLinearVelocity());
+    newBlob.body.setLinearVelocity(v);
+    println(newBlob.body.getLinearVelocity());
     newBlob.body.setAngularVelocity(thisBlob.body.getAngularVelocity());
     blobList.add(newBlob);
   }
@@ -156,7 +166,8 @@ void handleBlobs() {
   }
 }
 
-void summonBlob(int buttonIndex, int value){
-  NumberBlob newBlob = new NumberBlob(buttons[buttonIndex].posX, buttons[buttonIndex].posY + pixelsPerCM, pixelsPerCM, value, color(150), buttons[buttonIndex].shape);
+void summonBlob(int buttonIndex, int value) {
+  NumberBlob newBlob = new NumberBlob(buttons[buttonIndex].posX + 0.707*pixelsPerCM, buttons[buttonIndex].posY + 0.707*pixelsPerCM, pixelsPerCM, value, color(random(70, 200), random(70, 200), random(70, 200)), buttons[buttonIndex].shape);
   blobList.add(newBlob);
 }
+
