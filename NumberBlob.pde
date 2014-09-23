@@ -19,6 +19,8 @@ class NumberBlob {
   int value;
   color col;
   String shape;
+  
+  int lastClicked; //stores frameCount of when last clicked.
 
   float angle;
   boolean newborn;
@@ -37,6 +39,8 @@ class NumberBlob {
     col = col_;
 
     shape = shape_;
+    
+    lastClicked = 0;
     newborn = true;
     dead = false;
 

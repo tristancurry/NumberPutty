@@ -4,10 +4,12 @@ void mousePressed() {
     NumberBlob thisBlob = (NumberBlob) blobList.get(i);
 
     if (thisBlob.contains(mouseX, mouseY)) {
-      // And if not in smash mode, bind the mouse location to the box with a spring
-      if (!smashMode) {
+      // If there's been enough time since the last click, bind the mouse location to the box with a spring
+      if (frameCount - thisBlob.lastClicked > 6) {
         spring.bind(mouseX, mouseY, thisBlob);
-        //and if smashMode is on, and smashing the blob isn't going to result in fractions...
+        thisBlob.lastClicked = frameCount;
+        
+        //otherwise, if smashing the blob isn't going to result in fractions...
       } else { 
         if (abs(thisBlob.value) != 1 &&!exploding && !thisBlob.newborn) {
           if(thisBlob.value == 0 && !zeroSplittingAllowed){
@@ -58,6 +60,7 @@ void mouseReleased() {
   if (buttons[buttons.length - 1].mouseIn() && buttons[buttons.length - 1].state == "down") {
     mergeBlobs();
   }
+  
 }
 
 
