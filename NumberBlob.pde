@@ -68,7 +68,7 @@ class NumberBlob {
     // We look at each body and get its screen position
     pos = box2d.getBodyPixelCoord(body);
     // Get its angle of rotation
-    angle = body.getAngle();
+    angle = -1*body.getAngle();
 
 
     textAlign(PConstants.CENTER, PConstants.CENTER);

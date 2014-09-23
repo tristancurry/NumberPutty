@@ -20,8 +20,6 @@ float arenaWidth;
 float arenaHeight;
 float bucketWidth;
 
-int clickTimer;
-
 boolean smashMode = false;
 boolean exploding = false;
 boolean zeroAllowed = true;
@@ -30,7 +28,6 @@ boolean unitsAllowed = true;
 boolean negativeAllowed = true;
 boolean budgetProblem = false;
 
-int kludgeTally = 0;
 int totalElements;
 int totalValue;
 
@@ -90,7 +87,6 @@ void setup() {
   species = new int[2*budget + 1];
 
   background(0);
-  clickTimer = 0;
 
   smooth();
 }
@@ -260,10 +256,7 @@ void draw() {
 
 
   renderButtons(buttons);
-  drawHint();
 
-  clickTimer ++;
-  println(clickTimer);
   box2d.step();
 }
 

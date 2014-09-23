@@ -52,7 +52,7 @@ class Spring {
     
     // Body A is just a fake ground body for simplicity (there isn't anything at the mouse)
     md.bodyA = box2d.getGroundBody();
-    // Body 2 is the box's boxy
+    // Body 2 is the box's body
     md.bodyB = blob.body;
     // Get the mouse location in world coordinates
     Vec2 mp = box2d.coordPixelsToWorld(x,y);
@@ -60,8 +60,8 @@ class Spring {
     md.target.set(mp);
     // Some stuff about how strong and bouncy the spring should be
     md.maxForce = 10000.0 * blob.body.m_mass;
-    md.frequencyHz = 5.0;
-    md.dampingRatio = 0.9;
+    md.frequencyHz = 10.0;
+    md.dampingRatio = 0.3;
 
     // Wake up body!
     //box.body.wakeUp();

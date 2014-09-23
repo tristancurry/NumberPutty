@@ -20,7 +20,6 @@ void mousePressed() {
           }
         } else if (abs(thisBlob.value) == 1) {
           //alert the user they are trying to smash a fundamental unit!
-          kludgeTally ++;
         }
       }
     }
@@ -33,14 +32,12 @@ void mouseReleased() {
   spring.destroy();
 
   if (buttons[0].mouseIn() && buttons[0].state == "down") {
-    smashMode = !smashMode;
-    kludgeTally = 0;
-    if (smashMode) {
+    /*if (smashMode) {
       buttons[0].buttonText = "!";
     } else {
 
       buttons[0].buttonText = "@";
-    }
+    }*/
   }
 
 
@@ -86,6 +83,7 @@ void makeButtons() {
   smashButton.symbolSize = 20;
   smashButton.symbolFont = font20;
   smashButton.buttonText = "@";
+  smashButton.state = "inactive";
   Button posButton = (Button) buttonGroup1.get(1);
   posButton.buttonText = "+";
   //posButton.state = "inactive";
@@ -130,33 +128,5 @@ void renderButtons(Button[] b) {
   }
 }
 
-//this function starts drawing circles around the smash/throw selector if the user persistently tries to smash units
-void drawHint() {
-  strokeWeight(5);
-  noFill();
-  stroke(255);
-  pushMatrix();
-  translate(buttons[0].posX, buttons[0].posY);
-  if (kludgeTally > 3) {
-    if (buttons[0].shape == "ball") {
-      ellipseMode(CENTER);
-      ellipse(0, 0, 1.5*pixelsPerCM, 1.5*pixelsPerCM);
-    } else {
-      rectMode(CENTER);
-      rect(0, 0, 1.5*pixelsPerCM, 1.5*pixelsPerCM);
-    }
 
-    if (kludgeTally > 7) {
-      stroke(200);
-      if (buttons[0].shape == "ball") {
-        ellipseMode(CENTER);
-        ellipse(0, 0, 2.0*pixelsPerCM, 2.0*pixelsPerCM);
-      } else {
-        rectMode(CENTER);
-        rect(0, 0, 2.0*pixelsPerCM, 2.0*pixelsPerCM);
-      }
-    }
-  }
-  popMatrix();
-}
 

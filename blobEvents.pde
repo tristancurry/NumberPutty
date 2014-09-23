@@ -40,7 +40,6 @@ void mergeBlobs() {
 
 
 void smashBlob(NumberBlob thisBlob) {
-  kludgeTally = 0;
   int val = thisBlob.value;
   int frag[] = new int[2];
 
