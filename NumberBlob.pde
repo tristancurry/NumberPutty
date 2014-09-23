@@ -19,12 +19,13 @@ class NumberBlob {
   int value;
   color col;
   String shape;
-  
+
   int lastClicked; //stores frameCount of when last clicked.
 
   float angle;
   boolean newborn;
   boolean dead;
+  boolean held;
   Vec2 pos;
 
 
@@ -39,10 +40,11 @@ class NumberBlob {
     col = col_;
 
     shape = shape_;
-    
+
     lastClicked = 0;
     newborn = true;
     dead = false;
+    held = false;
 
 
     makeBody(new Vec2(posX, posY), diam);
@@ -75,7 +77,11 @@ class NumberBlob {
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(angle);
-    fill(col);
+    if (lastClicked > 0 && frameCount - lastClicked < 3 || held) {
+      fill(255);
+    } else {
+      fill(col);
+    }
     noStroke();
 
     if (shape == "ball") {
@@ -85,7 +91,11 @@ class NumberBlob {
       rectMode(PConstants.CENTER);
       rect(0, 0, 0.99*diam, 0.99*diam);
     } 
-    fill(255);
+    if (lastClicked > 0 && frameCount - lastClicked < 3 || held) {
+      fill(40);
+    } else {
+      fill(255);
+    }
     textFont(font20);
     textSize(20);
     text(value, 0, 0);

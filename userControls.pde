@@ -8,20 +8,22 @@ void mousePressed() {
       if (frameCount - thisBlob.lastClicked > 6) {
         spring.bind(mouseX, mouseY, thisBlob);
         thisBlob.lastClicked = frameCount;
-        
+        thisBlob.held = true;
+
         //otherwise, if smashing the blob isn't going to result in fractions...
       } else { 
         if (abs(thisBlob.value) != 1 &&!exploding && !thisBlob.newborn) {
-          if(thisBlob.value == 0 && !zeroSplittingAllowed){
+          if (thisBlob.value == 0 && !zeroSplittingAllowed) {
           } else {
-          smashBlob(thisBlob);
-          thisBlob.dead = true;
-          thisBlob.killBody();
+            smashBlob(thisBlob);
+            thisBlob.dead = true;
+            thisBlob.killBody();
           }
         } else if (abs(thisBlob.value) == 1) {
           //alert the user they are trying to smash a fundamental unit!
         }
       }
+      break;
     }
   }
 }
@@ -30,14 +32,18 @@ void mousePressed() {
 
 void mouseReleased() {
   spring.destroy();
+  for (int i = 0; i < blobList.size (); i++) {
+    NumberBlob thisBlob = (NumberBlob) blobList.get(i);
+    thisBlob.held = false;
+  }
 
   if (buttons[0].mouseIn() && buttons[0].state == "down") {
     /*if (smashMode) {
-      buttons[0].buttonText = "!";
-    } else {
-
-      buttons[0].buttonText = "@";
-    }*/
+     buttons[0].buttonText = "!";
+     } else {
+     
+     buttons[0].buttonText = "@";
+     }*/
   }
 
 
@@ -57,7 +63,6 @@ void mouseReleased() {
   if (buttons[buttons.length - 1].mouseIn() && buttons[buttons.length - 1].state == "down") {
     mergeBlobs();
   }
-  
 }
 
 
@@ -127,6 +132,5 @@ void renderButtons(Button[] b) {
     b[i].display();
   }
 }
-
 
 
