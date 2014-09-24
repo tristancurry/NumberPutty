@@ -1,20 +1,20 @@
 void mousePressed() {
   // check to see if the scoop is clicked on
-  if(myScoop.contains(mouseX,mouseY)){
-        spring.bindScoop(mouseX, mouseY, myScoop);
-        myScoop.lastClicked = frameCount;
-        myScoop.held = true;
+  if (myScoop.contains(mouseX, mouseY)) {
+    spring.bindScoop(mouseX, mouseY, myScoop);
+    myScoop.lastClicked = frameCount;
+    myScoop.held = true;
   }
-  
 
-  
+
+
   // Check to see if the mouse was clicked on the box
   for (int i = 0; i < blobList.size (); i++) {
     NumberBlob thisBlob = (NumberBlob) blobList.get(i);
 
     if (thisBlob.contains(mouseX, mouseY)) {
       // If there's been enough time since the last click, bind the mouse location to the box with a spring
-      if (frameCount - thisBlob.lastClicked > 6) {
+      if (frameCount - thisBlob.lastClicked > 12) {
         spring.bind(mouseX, mouseY, thisBlob);
         thisBlob.lastClicked = frameCount;
         thisBlob.held = true;
@@ -22,21 +22,19 @@ void mousePressed() {
         //otherwise, if smashing the blob isn't going to result in fractions...
       } else { 
         if (abs(thisBlob.value) != 1 &&!exploding && !thisBlob.newborn) {
+
           if (thisBlob.value == 0 && !zeroSplittingAllowed) {
           } else {
             smashBlob(thisBlob);
             thisBlob.dead = true;
             thisBlob.killBody();
           }
-        } else if (abs(thisBlob.value) == 1) {
-          //alert the user they are trying to smash a fundamental unit!
         }
+        break;
       }
-      break;
     }
   }
 }
-
 
 
 void mouseReleased() {
@@ -48,14 +46,7 @@ void mouseReleased() {
   myScoop.held = false;
   myScoop.body.setFixedRotation(false);
 
-  if (buttons[0].mouseIn() && buttons[0].state == "down") {
-    /*if (smashMode) {
-     buttons[0].buttonText = "!";
-     } else {
-     
-     buttons[0].buttonText = "@";
-     }*/
-  }
+
 
 
   if (buttons[0].mouseIn() && buttons[0].state == "down") {
@@ -140,7 +131,7 @@ void renderButtons(Button[] b) {
   }
 }
 
-void toggleButtonActivation(){
+void toggleButtonActivation() {
 
   if (totalElements >= budget) {
     budgetProblem = true;
@@ -173,5 +164,5 @@ void toggleButtonActivation(){
     }
     budgetProblem = false;
   }
-
 }
+

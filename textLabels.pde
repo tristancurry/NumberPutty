@@ -1,4 +1,4 @@
-void displayLabels(){
+void displayLabels() {
   //temporary labels
 
 
@@ -60,3 +60,4 @@ void displayLabels(){
   }
   popMatrix();
 }
+

@@ -28,7 +28,7 @@ void mergeBlobs() {
         newDiam = pixelsPerCM;
       }
 
-      NumberBlob newBlob = new NumberBlob(buttons[buttons.length - 1].posX, buttons[buttons.length - 1].posY + (pixelsPerCM + newDiam)/2, newDiam, int(tally), color(random(70,200),random(70,200),random(70,200)), buttons[buttons.length - 1].shape);
+      NumberBlob newBlob = new NumberBlob(buttons[buttons.length - 1].posX, buttons[buttons.length - 1].posY + (pixelsPerCM + newDiam)/2, newDiam, int(tally), color(random(70, 200), random(70, 200), random(70, 200)), buttons[buttons.length - 1].shape);
 
 
       blobList.add(newBlob);
@@ -94,7 +94,6 @@ void smashBlob(NumberBlob thisBlob) {
     v = v.mulLocal(2);
     v = v.addLocal(thisBlob.body.getLinearVelocity());
     newBlob.body.setLinearVelocity(v);
-    println(newBlob.body.getLinearVelocity());
     newBlob.body.setAngularVelocity(thisBlob.body.getAngularVelocity());
     blobList.add(newBlob);
   }
@@ -171,11 +170,12 @@ void summonBlob(int buttonIndex, int value) {
   blobList.add(newBlob);
 }
 
-void constrainBlobToArena(NumberBlob b){
-        if (b.pos.x < 10 || b.pos.x > arenaWidth -10 || b.pos.y < 10 || b.pos.y > arenaHeight -10) {
-        Vec2 p = new Vec2(b.pos.x, b.pos.y);
-        p.x = constrain(p.x, b.diam/2 + 10, arenaWidth - 10 - b.diam/2);
-        p.y = constrain(p.y, b.diam/2 + 10, arenaHeight - 10 - b.diam/2);
-        b.body.setTransform(box2d.coordPixelsToWorld(p), b.body.getAngle());
-      }
+void constrainBlobToArena(NumberBlob b) {
+  if (b.pos.x < 10 || b.pos.x > arenaWidth -10 || b.pos.y < 10 || b.pos.y > arenaHeight -10) {
+    Vec2 p = new Vec2(b.pos.x, b.pos.y);
+    p.x = constrain(p.x, b.diam/2 + 10, arenaWidth - 10 - b.diam/2);
+    p.y = constrain(p.y, b.diam/2 + 10, arenaHeight - 10 - b.diam/2);
+    b.body.setTransform(box2d.coordPixelsToWorld(p), b.body.getAngle());
+  }
 }
+

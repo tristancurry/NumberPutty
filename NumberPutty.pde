@@ -135,7 +135,7 @@ void draw() {
 
   for (int i = 0; i < blobList.size (); i++) {
     NumberBlob thisBlob = (NumberBlob) blobList.get(i);
-    if (!thisBlob.newborn) {
+    if (!thisBlob.newborn && !thisBlob.dead) {
       constrainBlobToArena(thisBlob);
 
     }
