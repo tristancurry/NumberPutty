@@ -88,9 +88,12 @@ void setup() {
 
   myScoop = new Scoop(11, arenaHeight - 11, 5*pixelsPerCM, 5*pixelsPerCM, color(80));
 
+
   background(0);
   //blendMode(SCREEN);
   smooth();
+  
+
 }
 
 
@@ -98,7 +101,6 @@ void setup() {
 
 void draw() {
   background(0);
-
 
   fill(255);
   textAlign(CENTER);
@@ -133,6 +135,10 @@ void draw() {
 
   for (int i = 0; i < blobList.size (); i++) {
     NumberBlob thisBlob = (NumberBlob) blobList.get(i);
+    if (!thisBlob.newborn) {
+      constrainBlobToArena(thisBlob);
+
+    }
     thisBlob.display();
 
     //calculate various totals
@@ -158,4 +164,3 @@ void draw() {
 
   box2d.step();
 }
-

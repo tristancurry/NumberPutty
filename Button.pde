@@ -19,7 +19,7 @@ class Button {
   color hoverCol = color(255);
   color downCol  = color (130);
 
-  boolean visible = true;
+
 
   //Constructor//
 
@@ -102,29 +102,29 @@ class Button {
 
 
   void display() {
-    if (visible) {
-      noFill();
-      strokeWeight(3);
-      stroke(stateCol);
-      pushMatrix();
-      translate(posX, posY);
 
-      if (shape == "ball") {
-        ellipseMode(CENTER);
-        ellipse(0, 0, diam, diam);
-      } else {
-        rectMode(CENTER);
-        rect(0, 0, diam, diam);
-      }
-      textFont(symbolFont);
-      textSize(symbolSize);
-      fill(stateCol);
-      textAlign(CENTER, CENTER);
-      text(buttonText, 0, 0);
+    noFill();
+    strokeWeight(3);
+    stroke(stateCol);
+    pushMatrix();
+    translate(posX, posY);
 
-      popMatrix();
+    if (shape == "ball") {
+      ellipseMode(CENTER);
+      ellipse(0, 0, diam, diam);
+    } else {
+      rectMode(CENTER);
+      rect(0, 0, diam, diam);
     }
+    textFont(symbolFont);
+    textSize(symbolSize);
+    fill(stateCol);
+    textAlign(CENTER, CENTER);
+    text(buttonText, 0, 0);
+
+    popMatrix();
   }
+
 
 
   void swapButtonShape() {
@@ -135,4 +135,3 @@ class Button {
     }
   }
 }
-

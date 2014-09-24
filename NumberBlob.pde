@@ -6,7 +6,7 @@
 // Spring 2010
 // Box2DProcessing example
 
-// A ball with a number in
+// A ball or box with a number in
 
 class NumberBlob {
 
@@ -23,8 +23,8 @@ class NumberBlob {
   int lastClicked; //stores frameCount of when last clicked.
 
   float angle;
-  boolean newborn;
-  boolean dead;
+  boolean newborn; //used to prevent certain actions between instantiation and the first following Box2D step
+  boolean dead; //used to queue for deletion
   boolean held;
   Vec2 pos;
 
@@ -77,6 +77,7 @@ class NumberBlob {
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(angle);
+
     if (lastClicked > 0 && frameCount - lastClicked < 3 || held) {
       fill(255);
     } else {
@@ -96,6 +97,7 @@ class NumberBlob {
     } else {
       fill(255);
     }
+    
     textFont(font20);
     textSize(20);
     text(value, 0, 0);
@@ -160,4 +162,3 @@ class NumberBlob {
     body.setAngularVelocity(random(-5, 5));
   }
 }
-

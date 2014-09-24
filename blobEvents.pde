@@ -171,3 +171,11 @@ void summonBlob(int buttonIndex, int value) {
   blobList.add(newBlob);
 }
 
+void constrainBlobToArena(NumberBlob b){
+        if (b.pos.x < 10 || b.pos.x > arenaWidth -10 || b.pos.y < 10 || b.pos.y > arenaHeight -10) {
+        Vec2 p = new Vec2(b.pos.x, b.pos.y);
+        p.x = constrain(p.x, b.diam/2 + 10, arenaWidth - 10 - b.diam/2);
+        p.y = constrain(p.y, b.diam/2 + 10, arenaHeight - 10 - b.diam/2);
+        b.body.setTransform(box2d.coordPixelsToWorld(p), b.body.getAngle());
+      }
+}
