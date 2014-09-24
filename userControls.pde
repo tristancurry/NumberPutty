@@ -1,6 +1,6 @@
 void mousePressed() {
   // check to see if the scoop is clicked on
-  if (myScoop.contains(mouseX, mouseY)) {
+  if (myScoop != null && myScoop.contains(mouseX, mouseY)) {
     spring.bindScoop(mouseX, mouseY, myScoop);
     myScoop.lastClicked = frameCount;
     myScoop.held = true;
@@ -43,8 +43,11 @@ void mouseReleased() {
     NumberBlob thisBlob = (NumberBlob) blobList.get(i);
     thisBlob.held = false;
   }
-  myScoop.held = false;
-  myScoop.body.setFixedRotation(false);
+
+  if (myScoop != null) {
+    myScoop.held = false;
+    myScoop.body.setFixedRotation(false);
+  }
 
 
 
@@ -70,9 +73,14 @@ void mouseReleased() {
 
 
 void makeButtons() {
+  float buttonDiam = minDiam;
+  if(buttonDiam < pixelsPerCM){
+    buttonDiam = pixelsPerCM;
+  }
+
   ArrayList buttonGroup1 = new ArrayList();
   for (int i = 0; i < 3; i++) {
-    Button newButton = new Button ((i+1) * (arenaWidth - bucketWidth)/4, 50, 1*pixelsPerCM, "", "ball", "available");
+    Button newButton = new Button ((i+1) * (arenaWidth - bucketWidth)/4, 0.6*buttonDiam + boundThickness, buttonDiam, "", "ball", "available");
     newButton.symbolSize = 42;
     newButton.symbolFont = font42;
     buttonGroup1.add(newButton);
@@ -82,7 +90,8 @@ void makeButtons() {
 
   ArrayList buttonGroup2 = new ArrayList();
   for (int i = 0; i < 3; i++) {
-    Button newButton = new Button ((1-controlPaddingPC)*width - 0.5*pixelsPerCM, (i+1)*height/4, pixelsPerCM, "", "ball", "available");
+
+    Button newButton = new Button ((1-controlPaddingPC)*width - 0.5*buttonDiam, (i+1)*height/4, buttonDiam, "", "ball", "available");
     buttonGroup2.add(newButton);
   }
 
@@ -108,7 +117,7 @@ void makeButtons() {
   shapeButton.buttonText = "?";
   shapeButton.shape = "box";
 
-  Button mergeButton = new Button (arenaWidth - 0.5*bucketWidth -10, 50, 1*pixelsPerCM, "=", "ball", "available");
+  Button mergeButton = new Button (arenaWidth - 0.5*bucketWidth -10, 0.6*buttonDiam + boundThickness, buttonDiam, "=", "ball", "available");
   mergeButton.symbolSize = 42;
   mergeButton.symbolFont = font42;
   buttons = new Button[7];
@@ -132,19 +141,19 @@ void renderButtons(Button[] b) {
 }
 
 void toggleButtonActivation() {
-
   if (totalElements >= budget) {
     budgetProblem = true;
+    println("budgetProblem = " + budgetProblem);
     zeroSplittingAllowed = false;
     buttons[1].state="inactive";
     if (totalValue >= budget) {
       buttons[0].state = "inactive";
-      if (totalElements >= budget + 1) {
+      if (totalElements >= budget + 3) {
         buttons[2].state = "inactive";
       }
     } else if (totalValue <= -1*budget) {
       buttons[2].state = "inactive";
-      if (totalElements >= budget + 1) {
+      if (totalElements >= budget + 3) {
         buttons[0].state = "inactive";
       }
     } else {
@@ -165,4 +174,3 @@ void toggleButtonActivation() {
     budgetProblem = false;
   }
 }
-

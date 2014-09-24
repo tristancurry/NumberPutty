@@ -124,7 +124,7 @@ class NumberBlob {
     if (shape == "ball") {
       // Make the body's shape a circle
       CircleShape cs = new CircleShape();
-      cs.m_radius = box2d.scalarPixelsToWorld((diam + 5)/2);
+      cs.m_radius = box2d.scalarPixelsToWorld(diam/2);
 
 
       // Define a fixture
@@ -140,8 +140,8 @@ class NumberBlob {
 
       // Define a polygon (this is what we use for a rectangle)
       PolygonShape sd = new PolygonShape();
-      float box2dWidth = box2d.scalarPixelsToWorld(diam_/2);
-      float box2dHeight = box2d.scalarPixelsToWorld(diam_/2);
+      float box2dWidth = box2d.scalarPixelsToWorld(diam/2);
+      float box2dHeight = box2d.scalarPixelsToWorld(diam/2);
       sd.setAsBox(box2dWidth, box2dHeight);
 
       // Define a fixture

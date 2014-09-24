@@ -16,6 +16,8 @@ Box2DProcessing box2d;
 
 int pixelsPerInch;
 int pixelsPerCM;
+float minDiamCM = 1.5;
+float minDiam;
 float arenaWidth;
 float arenaHeight;
 float bucketWidth;
@@ -31,12 +33,13 @@ boolean budgetProblem = false;
 int totalElements;
 int totalValue;
 
-float controlDiameterCM = 1;
+
 float controlPaddingPC = 0.02;
 
 int budget = 72;
 
 ArrayList boundaries;
+float boundThickness;
 ArrayList blobList;
 Button[] buttons;
 int[] species;
@@ -47,6 +50,9 @@ Spring spring;
 PFont font12;
 PFont font20;
 PFont font42;
+
+color posCol = color(150);
+color bucketCol = color(40);
 
 void setup() {
 
@@ -61,6 +67,8 @@ void setup() {
   pixelsPerInch = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
   pixelsPerCM = int(round(pixelsPerInch/2.55));
 
+  minDiam = pixelsPerCM*minDiamCM;
+  boundThickness = 15;
 
 
   //Initialise box2d physics, create the world
@@ -68,17 +76,17 @@ void setup() {
   box2d.createWorld();
   box2d.setGravity(0, -60);
 
-  makeArena();
+  makeArena(minDiam, boundThickness, controlPaddingPC);
 
   spring = new Spring();
 
 
   blobList = new ArrayList();
 
-
-
-  for (int i = 0; i < 6; i++) {
-    NumberBlob newBlob = new NumberBlob ((arenaWidth - bucketWidth)/2, height/2, floor(pow(i+1, (1/3.))*pixelsPerCM), i+1, color(150), "ball");
+  int n = int(floor((-1 + sqrt(1 + 8*budget))/2));  //using reverse Gauss trick to provide initial sequence of blob values
+  
+  for (int i = 0; i < n; i++) {
+    NumberBlob newBlob = new NumberBlob ((arenaWidth - bucketWidth)/2, height/2, floor(pow(i+1, (1/3.))*minDiam), i+1, posCol, "ball");
     blobList.add(newBlob);
   }
 
@@ -86,14 +94,16 @@ void setup() {
 
   species = new int[2*budget + 1];
 
-  myScoop = new Scoop(11, arenaHeight - 11, 5*pixelsPerCM, 5*pixelsPerCM, color(80));
 
+  float scoopWidth = 3*minDiam;
+  scoopWidth = constrain(scoopWidth, 0.2*(arenaWidth - bucketWidth), 0.4*(arenaWidth - bucketWidth));
+  if (scoopWidth > 1.5*minDiam) {
+    myScoop = new Scoop(boundThickness + 1, arenaHeight - boundThickness - 1, scoopWidth, scoopWidth, color(1.5*red(bucketCol),1.5*green(bucketCol),1.5*blue(bucketCol)));
+  }
 
   background(0);
   //blendMode(SCREEN);
   smooth();
-  
-
 }
 
 
@@ -113,53 +123,33 @@ void draw() {
   text("All controls are available here...", (arenaWidth - bucketWidth)/2, 0.35*arenaHeight);
   text("...but will only be slowly introduced in the final rev.", (arenaWidth - bucketWidth)/2, 0.40*arenaHeight);
 
-  totalElements = 0;
-  totalValue = 0;
-  for (int i = 0; i< species.length; i++) {
-    species[i] = 0;
-  }
+
+
   spring.update(mouseX, mouseY);
 
-  fill(40);
-  rectMode(CENTER);
-  noStroke();
-  pushMatrix();
-  translate(arenaWidth - 0.5*bucketWidth - 12.5, arenaHeight/2);
-  rect(0, 0, bucketWidth, arenaHeight -25);
-  popMatrix();
+  drawBucket(boundThickness, bucketCol);
+
+
   for (int i = 0; i < boundaries.size (); i++) {
     Boundary wall = (Boundary) boundaries.get(i);
     wall.display();
   }
 
-
-  for (int i = 0; i < blobList.size (); i++) {
-    NumberBlob thisBlob = (NumberBlob) blobList.get(i);
-    if (!thisBlob.newborn && !thisBlob.dead) {
-      constrainBlobToArena(thisBlob);
-
-    }
-    thisBlob.display();
-
-    //calculate various totals
-    totalValue = totalValue + thisBlob.value;
-    totalElements = totalElements + abs(thisBlob.value);
-    if (thisBlob.value == 0) {
-      totalElements++;
-    }
-    species[thisBlob.value + budget]++;
-  }
-
   toggleButtonActivation();
 
-
-
-
   handleBlobs();
-
+  countBlobs();
+  
+  if(myScoop != null){
   myScoop.display();
+  }
+  
   spring.display();
+  
+  drawBucket(boundThickness, color(red(bucketCol), green(bucketCol), blue(bucketCol), 100));
+  
   displayLabels();
+  
   renderButtons(buttons);
 
   box2d.step();

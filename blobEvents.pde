@@ -17,18 +17,19 @@ void mergeBlobs() {
         tally = tally + thisBlob.value;
         thisBlob.dead = true;
         thisBlob.killBody();
+        thisBlob.value = 0;
       }
     }
     //if the tally is zero, and zeroBlobs aren't allowed, then don't worry about making a new blob...
     if (tally == 0 && !zeroAllowed) {
     } else {
-      float newDiam = pow(abs(tally), 1/3.)*pixelsPerCM;
+      float newDiam = pow(abs(tally), 1/3.)*minDiam;
       //if we did end up with a zeroBlob, please give it a radius bigger than 0.
       if (tally == 0) {
-        newDiam = pixelsPerCM;
+        newDiam = minDiam;
       }
 
-      NumberBlob newBlob = new NumberBlob(buttons[buttons.length - 1].posX, buttons[buttons.length - 1].posY + (pixelsPerCM + newDiam)/2, newDiam, int(tally), color(random(70, 200), random(70, 200), random(70, 200)), buttons[buttons.length - 1].shape);
+      NumberBlob newBlob = new NumberBlob(buttons[buttons.length - 1].posX, buttons[buttons.length - 1].posY + (buttons[buttons.length - 1].diam + newDiam)/2, newDiam, int(tally), color(random(70, 200), random(70, 200), random(70, 200)), buttons[buttons.length - 1].shape);
 
 
       blobList.add(newBlob);
@@ -60,6 +61,8 @@ void smashBlob(NumberBlob thisBlob) {
 
 
   exploding = true;
+  totalElements = totalElements - abs(thisBlob.value);
+  thisBlob.value = 0;
 
   for (int i= 0; i<2; i ++) {
     float ang = thisBlob.body.getAngle() + random(0, PI);
@@ -68,7 +71,7 @@ void smashBlob(NumberBlob thisBlob) {
     Vec2 p;
     float d;
 
-    d = pow(abs(frag[i]), 1/3.)*pixelsPerCM;
+    d = pow(abs(frag[i]), 1/3.)*minDiam;
     d = constrain(d, pixelsPerCM, 10e6);
     p = new Vec2(d*cos(ang), d*sin(ang));
 
@@ -152,21 +155,54 @@ void swapShapes() {
   }
 }
 
-//remove dead blobs from memory, remove newborn status
-void handleBlobs() {
+//update blob tallies
+void countBlobs() {
+  totalElements = 0;
+  totalValue = 0;
+  for (int i = 0; i< species.length; i++) {
+    species[i] = 0;
+  }
+
   for (int i = 0; i < blobList.size (); i++) {
-    NumberBlob corpseBlob = (NumberBlob) blobList.get(i);
-    if (corpseBlob.dead) {
-      blobList.remove(i);
+    NumberBlob thisBlob = (NumberBlob) blobList.get(i);
+
+
+    //update various totals
+    totalValue = totalValue + thisBlob.value;
+    totalElements = totalElements + abs(thisBlob.value);
+    if (thisBlob.value == 0 && !thisBlob.dead) {
+      totalElements++;
     }
-    if (corpseBlob.newborn) {
-      corpseBlob.newborn = false;
+    species[thisBlob.value + budget]++;
+  }
+}
+
+
+//deal with display of blobs
+void handleBlobs() {
+ 
+
+  for (int i = 0; i < blobList.size (); i++) {
+    NumberBlob thisBlob = (NumberBlob) blobList.get(i);
+    //draw the blob to the screen
+    thisBlob.display();
+
+   
+    //check if blob is marked for deletion
+    //check if blob is marked as a new arrival, if so, unmark it
+    //otherwise make sure the blob is not squeezed from arena
+    if (thisBlob.dead) {
+      blobList.remove(i);
+    } else if (thisBlob.newborn) {
+      thisBlob.newborn = false;
+    } else {
+      constrainBlobToArena(thisBlob);
     }
   }
 }
 
 void summonBlob(int buttonIndex, int value) {
-  NumberBlob newBlob = new NumberBlob(buttons[buttonIndex].posX + 0.707*pixelsPerCM, buttons[buttonIndex].posY + 0.707*pixelsPerCM, pixelsPerCM, value, color(random(70, 200), random(70, 200), random(70, 200)), buttons[buttonIndex].shape);
+  NumberBlob newBlob = new NumberBlob(buttons[buttonIndex].posX + 0.707*minDiam, buttons[buttonIndex].posY + 0.707*minDiam, minDiam, value, color(random(70, 200), random(70, 200), random(70, 200)), buttons[buttonIndex].shape);
   blobList.add(newBlob);
 }
 
@@ -178,4 +214,3 @@ void constrainBlobToArena(NumberBlob b) {
     b.body.setTransform(box2d.coordPixelsToWorld(p), b.body.getAngle());
   }
 }
-

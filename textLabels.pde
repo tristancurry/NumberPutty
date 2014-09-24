@@ -2,13 +2,7 @@ void displayLabels() {
   //temporary labels
 
 
-    fill(40, 100);
-  rectMode(CENTER);
-  noStroke();
-  pushMatrix();
-  translate(arenaWidth - 0.5*bucketWidth - 12.5, arenaHeight/2);
-  rect(0, 0, bucketWidth, arenaHeight -25);
-  popMatrix();
+
   pushMatrix();
   translate(arenaWidth - 0.6*bucketWidth, arenaHeight/2);
 
@@ -60,4 +54,3 @@ void displayLabels() {
   }
   popMatrix();
 }
-
