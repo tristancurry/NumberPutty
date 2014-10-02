@@ -61,7 +61,7 @@ void smashBlob(NumberBlob thisBlob) {
 
 
   exploding = true;
-  totalElements = totalElements - abs(thisBlob.value);
+  //totalElements = totalElements - abs(thisBlob.value);
   thisBlob.value = 0;
 
   for (int i= 0; i<2; i ++) {
@@ -84,10 +84,6 @@ void smashBlob(NumberBlob thisBlob) {
     }
     p.y = constrain(p.y, d, arenaHeight - d);
 
-
-
-
-    //v = v.mulLocal(100*d/(60*pixelsPerCM));
     NumberBlob newBlob = new NumberBlob(p.x, p.y, d, frag[i], thisBlob.col, thisBlob.shape);
 
     newBlob.body.setTransform(newBlob.body.getPosition(), -1*thisBlob.body.getAngle());

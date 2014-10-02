@@ -74,7 +74,7 @@ void mouseReleased() {
 
 void makeButtons() {
   float buttonDiam = minDiam;
-  if(buttonDiam < pixelsPerCM){
+  if (buttonDiam < pixelsPerCM) {
     buttonDiam = pixelsPerCM;
   }
 
@@ -143,7 +143,6 @@ void renderButtons(Button[] b) {
 void toggleButtonActivation() {
   if (totalElements >= budget) {
     budgetProblem = true;
-    println("budgetProblem = " + budgetProblem);
     zeroSplittingAllowed = false;
     buttons[1].state="inactive";
     if (totalValue >= budget) {
@@ -174,3 +173,4 @@ void toggleButtonActivation() {
     budgetProblem = false;
   }
 }
+
