@@ -54,6 +54,10 @@ PFont font42;
 color posCol = color(150);
 color bucketCol = color(40);
 
+PImage boxPicker;
+PImage ballPicker;
+ColPicker yourPicker;
+
 void setup() {
 
   size(round(0.6*displayWidth), round(0.6*displayHeight));  // size always goes first!
@@ -62,6 +66,11 @@ void setup() {
   font12 = loadFont("ChicagoFLF-12.vlw");
   font20 = loadFont("ChicagoFLF-20.vlw");
   font42 = loadFont("ChicagoFLF-42.vlw");
+
+  boxPicker = loadImage("boxPalette.png");
+  ballPicker = loadImage("ballPalette.png");
+
+  yourPicker = new ColPicker(0, 0, 5, ballPicker, "ball");
 
   //work out dot pitch of screen
   pixelsPerInch = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
@@ -84,7 +93,7 @@ void setup() {
   blobList = new ArrayList();
 
   int n = int(floor((-1 + sqrt(1 + 8*budget))/2));  //using reverse Gauss trick to provide initial sequence of blob values
-  
+
   for (int i = 0; i < n; i++) {
     NumberBlob newBlob = new NumberBlob ((arenaWidth - bucketWidth)/2, height/2, floor(pow(i+1, (1/3.))*minDiam), i+1, posCol, "ball");
     blobList.add(newBlob);
@@ -98,7 +107,7 @@ void setup() {
   float scoopWidth = 3*minDiam;
   scoopWidth = constrain(scoopWidth, 0.2*(arenaWidth - bucketWidth), 0.4*(arenaWidth - bucketWidth));
   if (scoopWidth > 1.5*minDiam) {
-    myScoop = new Scoop(boundThickness + 1, arenaHeight - boundThickness - 1, scoopWidth, scoopWidth, color(1.5*red(bucketCol),1.5*green(bucketCol),1.5*blue(bucketCol)));
+    myScoop = new Scoop(boundThickness + 1, arenaHeight - boundThickness - 1, scoopWidth, scoopWidth, color(1.5*red(bucketCol), 1.5*green(bucketCol), 1.5*blue(bucketCol)));
   }
 
   background(0);
@@ -124,6 +133,20 @@ void draw() {
   text("...but will only be slowly introduced in the final rev.", (arenaWidth - bucketWidth)/2, 0.40*arenaHeight);
 
 
+  yourPicker.pWidth = 0.7*(width - arenaWidth);
+  yourPicker.pHeight = yourPicker.pWidth;
+  yourPicker.posX = 0.5*(width + arenaWidth);
+  yourPicker.posY = height - 0.6*yourPicker.pHeight;
+  if (yourPicker.contains(mouseX, mouseY)) {
+    println("IN");
+    yourPicker.selector = true;
+    yourPicker.selX = mouseX;
+    yourPicker.selY = mouseY;
+  } else {
+    println("OUT");
+    yourPicker.selector = false;
+  }
+  yourPicker.display();
 
   spring.update(mouseX, mouseY);
 
@@ -139,18 +162,19 @@ void draw() {
 
   handleBlobs();
   countBlobs();
-  
-  if(myScoop != null){
-  myScoop.display();
+
+  if (myScoop != null) {
+    myScoop.display();
   }
-  
+
   spring.display();
-  
+
   drawBucket(boundThickness, color(red(bucketCol), green(bucketCol), blue(bucketCol), 100));
-  
+
   displayLabels();
-  
+
   renderButtons(buttons);
 
   box2d.step();
 }
+

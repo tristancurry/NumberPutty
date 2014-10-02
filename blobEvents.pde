@@ -61,7 +61,6 @@ void smashBlob(NumberBlob thisBlob) {
 
 
   exploding = true;
-  //totalElements = totalElements - abs(thisBlob.value);
   thisBlob.value = 0;
 
   for (int i= 0; i<2; i ++) {
@@ -72,7 +71,7 @@ void smashBlob(NumberBlob thisBlob) {
     float d;
 
     d = pow(abs(frag[i]), 1/3.)*minDiam;
-    d = constrain(d, pixelsPerCM, 10e6);
+    d = constrain(d, minDiam, 10e6);
     p = new Vec2(d*cos(ang), d*sin(ang));
 
     p.x = p.x+thisBlob.pos.x;
@@ -148,6 +147,13 @@ void swapShapes() {
   swapBlobShape();
   for (int i = 0; i < buttons.length; i++) {
     buttons[i].swapButtonShape();
+  }
+  if(yourPicker.shape == "ball"){
+    yourPicker.shape = "box";
+    yourPicker.pickerImage = boxPicker;
+  } else {
+    yourPicker.shape = "ball";
+    yourPicker.pickerImage = ballPicker;
   }
 }
 
