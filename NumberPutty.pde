@@ -55,7 +55,7 @@ PFont font42;
 
 color posCol = color(150);
 color bucketCol = color(50);
-color bgCol = color(0,0,20);
+color bgCol = color(0,0,40);
 color newCol = color(random(70,200), random(70,200), random(70,200));
 
 PImage boxPicker;
@@ -124,10 +124,7 @@ void setup() {
 void draw() {
   background(bgCol);
   
-  colorMode(HSB);
-  println(hue(bgCol));
-  bgCol = color((hue(bgCol) + 1)%255, saturation(bgCol), brightness(bgCol));
-  colorMode(RGB);
+
   
   
   if(!colSet) newCol = color(random(70,200), random(70,200), random(70,200));

@@ -35,8 +35,8 @@ class ColPicker {
 
   PImage pickerImage;
 
-  float selX;
-  float selY;
+  float selX = -10; //start off-screen
+  float selY = -10;
 
   boolean selector;
   boolean dragging;
@@ -121,4 +121,3 @@ class ColPicker {
     popMatrix();
   }
 }
-
