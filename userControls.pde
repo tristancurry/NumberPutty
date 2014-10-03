@@ -6,7 +6,9 @@ void mousePressed() {
     myScoop.held = true;
   }
 
-
+  if (yourPicker.contains(mouseX, mouseY)) {
+    yourPicker.dragging = true;
+  }
 
   // Check to see if the mouse was clicked on the box
   for (int i = 0; i < blobList.size (); i++) {
@@ -38,6 +40,9 @@ void mousePressed() {
 
 
 void mouseReleased() {
+  
+  yourPicker.dragging = false;
+  
   spring.destroy();
   for (int i = 0; i < blobList.size (); i++) {
     NumberBlob thisBlob = (NumberBlob) blobList.get(i);
@@ -173,4 +178,3 @@ void toggleButtonActivation() {
     budgetProblem = false;
   }
 }
-

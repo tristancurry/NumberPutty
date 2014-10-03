@@ -53,6 +53,7 @@ PFont font42;
 
 color posCol = color(150);
 color bucketCol = color(40);
+color newCol;
 
 PImage boxPicker;
 PImage ballPicker;
@@ -137,16 +138,16 @@ void draw() {
   yourPicker.pHeight = yourPicker.pWidth;
   yourPicker.posX = 0.5*(width + arenaWidth);
   yourPicker.posY = height - 0.6*yourPicker.pHeight;
-  if (yourPicker.contains(mouseX, mouseY)) {
-    println("IN");
-    yourPicker.selector = true;
+yourPicker.selector = true;
+  yourPicker.display();
+
+
+  if (yourPicker.dragging && yourPicker.contains(mouseX, mouseY)) {
     yourPicker.selX = mouseX;
     yourPicker.selY = mouseY;
-  } else {
-    println("OUT");
-    yourPicker.selector = false;
+    loadPixels();
+    newCol = pixels[mouseY*width + mouseX];
   }
-  yourPicker.display();
 
   spring.update(mouseX, mouseY);
 
@@ -177,4 +178,3 @@ void draw() {
 
   box2d.step();
 }
-

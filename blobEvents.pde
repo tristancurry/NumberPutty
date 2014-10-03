@@ -71,7 +71,7 @@ void smashBlob(NumberBlob thisBlob) {
     float d;
 
     d = pow(abs(frag[i]), 1/3.)*minDiam;
-    d = constrain(d, minDiam, 10e6);
+    d = max(d, minDiam);  
     p = new Vec2(d*cos(ang), d*sin(ang));
 
     p.x = p.x+thisBlob.pos.x;
