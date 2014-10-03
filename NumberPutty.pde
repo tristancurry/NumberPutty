@@ -16,7 +16,7 @@ Box2DProcessing box2d;
 
 int pixelsPerInch;
 int pixelsPerCM;
-float minDiamCM = 1.5;
+float minDiamCM = 1.3;
 float minDiam;
 float arenaWidth;
 float arenaHeight;
@@ -29,6 +29,8 @@ boolean zeroSplittingAllowed = true;
 boolean unitsAllowed = true;
 boolean negativeAllowed = true;
 boolean budgetProblem = false;
+boolean colSet = false;
+
 
 int totalElements;
 int totalValue;
@@ -52,8 +54,9 @@ PFont font20;
 PFont font42;
 
 color posCol = color(150);
-color bucketCol = color(40);
-color newCol;
+color bucketCol = color(50);
+color bgCol = color(0,0,20);
+color newCol = color(random(70,200), random(70,200), random(70,200));
 
 PImage boxPicker;
 PImage ballPicker;
@@ -112,7 +115,6 @@ void setup() {
   }
 
   background(0);
-  //blendMode(SCREEN);
   smooth();
 }
 
@@ -120,8 +122,15 @@ void setup() {
 
 
 void draw() {
-  background(0);
-
+  background(bgCol);
+  
+  colorMode(HSB);
+  println(hue(bgCol));
+  bgCol = color((hue(bgCol) + 1)%255, saturation(bgCol), brightness(bgCol));
+  colorMode(RGB);
+  
+  
+  if(!colSet) newCol = color(random(70,200), random(70,200), random(70,200));
   fill(255);
   textAlign(CENTER);
   textFont(font12);

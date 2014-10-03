@@ -8,6 +8,7 @@ void mousePressed() {
 
   if (yourPicker.contains(mouseX, mouseY)) {
     yourPicker.dragging = true;
+    colSet = true;
   }
 
   // Check to see if the mouse was clicked on the box

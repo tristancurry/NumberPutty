@@ -92,21 +92,22 @@ class NumberBlob {
       rectMode(PConstants.CENTER);
       rect(0, 0, 0.99*diam, 0.99*diam);
     } 
+
+
+    //draw the text
     if (lastClicked > 0 && frameCount - lastClicked < 3 || held) {
       fill(40);
+      stroke(40);
+      blobText();
     } else {
-      fill(255);
-    }
-    
-    textFont(font20);
-    textSize(20);
-    text(value, 0, 0);
-
-    //do a thing to make 9 and 6 distinguishable
-    if (value == 6 || value == 9) {
-      strokeWeight(2);
-      stroke(255);
-      line(-0.3*textWidth(str(value)), 1+ 0.5*20, 0.3*textWidth(str(value)), 1+ 0.5*20);
+      translate(1, 1);
+      fill(40);
+      stroke(40);
+      blobText();
+      translate(-1, -1);
+      fill(255*round((255 - red(col))/255), 255*round((255 - green(col))/255), 255*round((255 - blue(col))/255));
+      stroke(255*round((255 - red(col))/255), 255*round((255 - green(col))/255), 255*round((255 - blue(col))/255));
+      blobText();
     }
 
     popMatrix();
@@ -160,5 +161,19 @@ class NumberBlob {
     // Give it some initial random velocity
     body.setLinearVelocity(new Vec2(random(-5, 5), random(-5, 5)));
     body.setAngularVelocity(random(-5, 5));
+  }
+
+  void blobText() {
+
+
+    textFont(font20);
+    textSize(0.5*pixelsPerCM);
+    text(value, 0, 0);
+
+    //do a thing to make 9 and 6 distinguishable
+    if (value == 6 || value == 9) {
+      strokeWeight(2);
+      line(-0.3*textWidth(str(value)), 1+ 0.5*20, 0.3*textWidth(str(value)), 1+ 0.5*20);
+    }
   }
 }

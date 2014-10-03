@@ -14,7 +14,7 @@ void mergeBlobs() {
     float tally = 0;
     for (int i = 0; i < blobList.size (); i++) {
       NumberBlob thisBlob = (NumberBlob) blobList.get(i);
-      if (thisBlob.pos.x < arenaWidth && thisBlob.pos.x > arenaWidth - bucketWidth) {
+      if (thisBlob.pos.x < arenaWidth && thisBlob.pos.x > arenaWidth - bucketWidth && !thisBlob.newborn) {
         tally = tally + thisBlob.value;
         thisBlob.dead = true;
         thisBlob.killBody();
