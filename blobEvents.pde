@@ -10,6 +10,7 @@ void mergeBlobs() {
   }
   //if so, then add their values to produce a new blob, then remove them
   if (numberOfBlobs > 1) {
+    IntList blobColor = new IntList();
     float tally = 0;
     for (int i = 0; i < blobList.size (); i++) {
       NumberBlob thisBlob = (NumberBlob) blobList.get(i);
@@ -18,6 +19,7 @@ void mergeBlobs() {
         thisBlob.dead = true;
         thisBlob.killBody();
         thisBlob.value = 0;
+        blobColor.append(thisBlob.col);
       }
     }
     //if the tally is zero, and zeroBlobs aren't allowed, then don't worry about making a new blob...
@@ -28,8 +30,25 @@ void mergeBlobs() {
       if (tally == 0) {
         newDiam = minDiam;
       }
+      color mergeCol = posCol;
+      float redAvg = 0;
+      float greenAvg = 0;
+      float blueAvg = 0;
+      for (int i = 0; i < blobColor.size (); i++) {
+        color thisColor =  blobColor.get(i);
+        redAvg = redAvg + red(thisColor);
+        greenAvg = greenAvg + green(thisColor);
+        blueAvg = blueAvg + blue(thisColor);
+        if (i == blobColor.size() - 1) {
+          redAvg = 1.0*redAvg/blobColor.size();
+          greenAvg = 1.0*greenAvg/blobColor.size();
+          blueAvg = 1.0*blueAvg/blobColor.size();
+        }
 
-      NumberBlob newBlob = new NumberBlob(buttons[buttons.length - 1].posX, buttons[buttons.length - 1].posY + (buttons[buttons.length - 1].diam + newDiam)/2, newDiam, int(tally), color(random(70, 200), random(70, 200), random(70, 200)), buttons[buttons.length - 1].shape);
+        mergeCol = color(redAvg, greenAvg, blueAvg);
+      }
+
+      NumberBlob newBlob = new NumberBlob(buttons[buttons.length - 1].posX, buttons[buttons.length - 1].posY + (buttons[buttons.length - 1].diam + newDiam)/2, newDiam, int(tally), mergeCol, buttons[buttons.length - 1].shape);
 
 
       blobList.add(newBlob);
@@ -148,7 +167,7 @@ void swapShapes() {
   for (int i = 0; i < buttons.length; i++) {
     buttons[i].swapButtonShape();
   }
-  if(yourPicker.shape == "ball"){
+  if (yourPicker.shape == "ball") {
     yourPicker.shape = "box";
     yourPicker.pickerImage = boxPicker;
   } else {
@@ -182,14 +201,14 @@ void countBlobs() {
 
 //deal with display of blobs
 void handleBlobs() {
- 
+
 
   for (int i = 0; i < blobList.size (); i++) {
     NumberBlob thisBlob = (NumberBlob) blobList.get(i);
     //draw the blob to the screen
     thisBlob.display();
 
-   
+
     //check if blob is marked for deletion
     //check if blob is marked as a new arrival, if so, unmark it
     //otherwise make sure the blob is not squeezed from arena
@@ -204,7 +223,7 @@ void handleBlobs() {
 }
 
 void summonBlob(int buttonIndex, int value) {
-  NumberBlob newBlob = new NumberBlob(buttons[buttonIndex].posX + 0.707*minDiam, buttons[buttonIndex].posY + 0.707*minDiam, minDiam, value, color(random(70, 200), random(70, 200), random(70, 200)), buttons[buttonIndex].shape);
+  NumberBlob newBlob = new NumberBlob(buttons[buttonIndex].posX + 0.707*minDiam, buttons[buttonIndex].posY + 0.707*minDiam, minDiam, value, newCol, buttons[buttonIndex].shape);
   blobList.add(newBlob);
 }
 
