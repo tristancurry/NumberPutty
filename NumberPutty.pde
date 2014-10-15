@@ -16,7 +16,7 @@ Box2DProcessing box2d;
 
 int pixelsPerInch;
 int pixelsPerCM;
-float minDiamCM = 1.3;
+float minDiamCM = 1.2;
 float minDiam;
 float arenaWidth;
 float arenaHeight;
@@ -133,11 +133,11 @@ void draw() {
   textFont(font12);
   textSize(12);
 
-  text("Drag and release the blobs to throw them around.", (arenaWidth - bucketWidth)/2, 0.2*arenaHeight);
-  text("Double-click the blobs to smash them into smaller bits!", (arenaWidth - bucketWidth)/2, 0.25*arenaHeight);
+  //text("Drag and release the blobs to throw them around.", (arenaWidth - bucketWidth)/2, 0.2*arenaHeight);
+  //text("Double-click the blobs to smash them into smaller bits!", (arenaWidth - bucketWidth)/2, 0.25*arenaHeight);
 
-  text("All controls are available here...", (arenaWidth - bucketWidth)/2, 0.35*arenaHeight);
-  text("...but will only be slowly introduced in the final rev.", (arenaWidth - bucketWidth)/2, 0.40*arenaHeight);
+  //text("All controls are available here...", (arenaWidth - bucketWidth)/2, 0.35*arenaHeight);
+  //text("...but will only be slowly introduced in the final rev.", (arenaWidth - bucketWidth)/2, 0.40*arenaHeight);
 
 
   yourPicker.pWidth = 0.7*(width - arenaWidth);
