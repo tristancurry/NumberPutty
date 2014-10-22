@@ -18,6 +18,7 @@ class Button {
   color availableCol = color(190);
   color hoverCol = color(255);
   color downCol  = color (130);
+  boolean hidden = false;
 
 
 
@@ -102,27 +103,28 @@ class Button {
 
 
   void display() {
+    if (!hidden) {
+      noFill();
+      strokeWeight(3);
+      stroke(stateCol);
+      pushMatrix();
+      translate(posX, posY);
 
-    noFill();
-    strokeWeight(3);
-    stroke(stateCol);
-    pushMatrix();
-    translate(posX, posY);
+      if (shape == "ball") {
+        ellipseMode(CENTER);
+        ellipse(0, 0, diam, diam);
+      } else {
+        rectMode(CENTER);
+        rect(0, 0, diam, diam);
+      }
+      textFont(symbolFont);
+      textSize(symbolSize);
+      fill(stateCol);
+      textAlign(CENTER, CENTER);
+      text(buttonText, 0, 0);
 
-    if (shape == "ball") {
-      ellipseMode(CENTER);
-      ellipse(0, 0, diam, diam);
-    } else {
-      rectMode(CENTER);
-      rect(0, 0, diam, diam);
+      popMatrix();
     }
-    textFont(symbolFont);
-    textSize(symbolSize);
-    fill(stateCol);
-    textAlign(CENTER, CENTER);
-    text(buttonText, 0, 0);
-
-    popMatrix();
   }
 
 
@@ -135,3 +137,4 @@ class Button {
     }
   }
 }
+

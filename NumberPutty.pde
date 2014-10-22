@@ -22,10 +22,10 @@ float arenaWidth;
 float arenaHeight;
 float bucketWidth;
 
-boolean smashMode = false;
+
 boolean exploding = false;
-boolean zeroAllowed = true;
-boolean zeroSplittingAllowed = true;
+boolean zeroAllowed = false;
+boolean zeroSplittingAllowed = false;
 boolean unitsAllowed = true;
 boolean negativeAllowed = true;
 boolean budgetProblem = false;
@@ -98,10 +98,10 @@ void setup() {
 
   int n = int(floor((-1 + sqrt(1 + 8*budget))/2));  //using reverse Gauss trick to provide initial sequence of blob values
 
-  for (int i = 0; i < n; i++) {
-    NumberBlob newBlob = new NumberBlob ((arenaWidth - bucketWidth)/2, height/2, floor(pow(i+1, (1/3.))*minDiam), i+1, posCol, "ball");
+
+    NumberBlob newBlob = new NumberBlob ((arenaWidth - bucketWidth)/2, height/2, floor(pow(10, (1/3.))*minDiam), 10, posCol, "ball");
     blobList.add(newBlob);
-  }
+
 
   makeButtons();
 
@@ -122,7 +122,11 @@ void setup() {
 
 
 void draw() {
+  if(totalElements >= budget){
+    background(50,0,0);
+  } else {
   background(bgCol);
+  }
   
 
   
@@ -133,11 +137,7 @@ void draw() {
   textFont(font12);
   textSize(12);
 
-  //text("Drag and release the blobs to throw them around.", (arenaWidth - bucketWidth)/2, 0.2*arenaHeight);
-  //text("Double-click the blobs to smash them into smaller bits!", (arenaWidth - bucketWidth)/2, 0.25*arenaHeight);
 
-  //text("All controls are available here...", (arenaWidth - bucketWidth)/2, 0.35*arenaHeight);
-  //text("...but will only be slowly introduced in the final rev.", (arenaWidth - bucketWidth)/2, 0.40*arenaHeight);
 
 
   yourPicker.pWidth = 0.7*(width - arenaWidth);

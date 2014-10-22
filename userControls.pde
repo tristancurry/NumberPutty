@@ -41,9 +41,9 @@ void mousePressed() {
 
 
 void mouseReleased() {
-  
+
   yourPicker.dragging = false;
-  
+
   spring.destroy();
   for (int i = 0; i < blobList.size (); i++) {
     NumberBlob thisBlob = (NumberBlob) blobList.get(i);
@@ -68,8 +68,22 @@ void mouseReleased() {
     summonBlob(2, -1);
   }
 
-  if (buttons[4].mouseIn() && buttons[4].state == "down") {
+  if (buttons[3].mouseIn() && buttons[3].state == "down") {
     swapShapes();
+  }
+
+  if (buttons[4].mouseIn() && buttons[4].state == "down") {
+    yourPicker.selX = random(-0.5*yourPicker.pWidth, 0.5*yourPicker.pWidth);
+    yourPicker.selY = random(-0.5*yourPicker.pWidth, 0.5*yourPicker.pWidth);
+    if(yourPicker.shape == "ball"){
+      yourPicker.selY = constrain(yourPicker.selY,-1*sqrt(sq(0.5*yourPicker.pWidth) - sq(yourPicker.selX)),sqrt(sq(0.5*yourPicker.pWidth) - sq(yourPicker.selX)));
+    }
+    yourPicker.selX = yourPicker.selX + yourPicker.posX;
+    yourPicker.selY = yourPicker.selY + yourPicker.posY;
+    loadPixels();
+    newCol = pixels[int(yourPicker.selY)*width +int(yourPicker.selX)];
+    colSet = true;
+
   }
   if (buttons[buttons.length - 1].mouseIn() && buttons[buttons.length - 1].state == "down") {
     mergeBlobs();
@@ -115,11 +129,13 @@ void makeButtons() {
   //negButton.state = "inactive";
 
 
-  Button colButton = (Button) buttonGroup2.get(0);
-  colButton.state = "inactive";
-  Button shapeButton = (Button) buttonGroup2.get(1);
+  Button colButton = (Button) buttonGroup2.get(1);
+  colButton.state = "available";
+  Button shapeButton = (Button) buttonGroup2.get(0);
   Button pauseButton = (Button) buttonGroup2.get(2);
   pauseButton.state = "inactive";
+  pauseButton.hidden = true;
+  colButton.buttonText = "?";
   shapeButton.buttonText = "?";
   shapeButton.shape = "box";
 
@@ -131,8 +147,8 @@ void makeButtons() {
   buttons[0] = posButton;
   buttons[1] = zeroButton;
   buttons[2] = negButton;
-  buttons[3] = colButton;
-  buttons[4] = shapeButton;
+  buttons[3] = shapeButton;
+  buttons[4] = colButton;
   buttons[5] = pauseButton;
   buttons[6] = mergeButton;
 }
@@ -147,6 +163,21 @@ void renderButtons(Button[] b) {
 }
 
 void toggleButtonActivation() {
+
+  if (!unitsAllowed) {
+    buttons[0].state = "inactive";
+  }
+
+  if (!negativeAllowed) {
+    buttons[2].state = "inactive";
+  }
+
+  if (!zeroAllowed) {
+    buttons[1].state = "inactive";
+  }
+
+
+
   if (totalElements >= budget) {
     budgetProblem = true;
     zeroSplittingAllowed = false;
@@ -179,3 +210,4 @@ void toggleButtonActivation() {
     budgetProblem = false;
   }
 }
+
