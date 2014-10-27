@@ -63,7 +63,7 @@ PImage ballPicker;
 ColPicker yourPicker;
 
 void setup() {
-
+  //size(1024, 768);
   size(round(0.6*displayWidth), round(0.6*displayHeight));  // size always goes first!
 
 
